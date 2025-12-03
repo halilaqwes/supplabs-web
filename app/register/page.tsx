@@ -6,10 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function RegisterPage() {
-    const [name, setName] = useState("");
-    const [surname, setSurname] = useState("");
     const [username, setUsername] = useState("");
-    const [handle, setHandle] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -20,7 +17,7 @@ export default function RegisterPage() {
         e.preventDefault();
         setError("");
         try {
-            await register({ email, password, name, surname, username, handle });
+            await register({ email, password, username });
             router.push("/feed");
         } catch (err: any) {
             setError(err.message || "Kayıt oluşturulamadı");
@@ -42,30 +39,6 @@ export default function RegisterPage() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="flex gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">İsim</label>
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                placeholder="İsminiz"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Soyisim</label>
-                            <input
-                                type="text"
-                                value={surname}
-                                onChange={(e) => setSurname(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                placeholder="Soyisminiz"
-                                required
-                            />
-                        </div>
-                    </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Kullanıcı Adı</label>
                         <input
@@ -74,17 +47,6 @@ export default function RegisterPage() {
                             onChange={(e) => setUsername(e.target.value)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                             placeholder="kullaniciadi"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Handle</label>
-                        <input
-                            type="text"
-                            value={handle}
-                            onChange={(e) => setHandle(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                            placeholder="@kullaniciadi"
                             required
                         />
                     </div>

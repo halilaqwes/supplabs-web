@@ -6,7 +6,7 @@ import { User } from "@/types";
 interface AuthContextType {
     user: User | null;
     login: (userData: { email: string; password: string }) => Promise<void>;
-    register: (userData: { email: string; password: string; name: string; surname: string; username: string; handle: string }) => Promise<void>;
+    register: (userData: { email: string; password: string; username: string }) => Promise<void>;
     logout: () => void;
     updateUser: (updates: Partial<User>) => void;
     startSubscription: () => void;
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const register = async (userData: { email: string; password: string; name: string; surname: string; username: string; handle: string }) => {
+    const register = async (userData: { email: string; password: string; username: string }) => {
         try {
             const response = await fetch('/api/auth/register', {
                 method: 'POST',

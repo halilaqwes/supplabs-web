@@ -4,17 +4,17 @@ import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
     try {
-        const { email, password, name, surname } = await request.json();
+        const { email, password, username } = await request.json();
 
         // Validate input
-        if (!email || !password || !name || !surname) {
+        if (!email || !password || !username) {
             return NextResponse.json(
-                { error: 'Tüm alanlar zorunludur' },
+                { error: 'Kullanıcı adı, e-posta ve şifre zorunludur' },
                 { status: 400 }
             );
         }
 
-        // Check if user exists
+        // Check if user exists by email
         const { data: existingUser } = await supabaseAdmin
             .from('users')
             .select('id')
@@ -28,35 +28,25 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Check if username exists
+        const { data: existingUsername } = await supabaseAdmin
+            .from('users')
+            .select('id')
+            .eq('username', username)
+            .single();
+
+        if (existingUsername) {
+            return NextResponse.json(
+                { error: 'Bu kullanıcı adı zaten kullanılıyor!' },
+                { status: 400 }
+            );
+        }
+
         // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
 
-        // Create user
-        const username = `${name} ${surname}`;
-        // Create unique handle
-        let handle = `@${email.split('@')[0]}`;
-        let isHandleUnique = false;
-        let attempt = 0;
-
-        while (!isHandleUnique && attempt < 5) {
-            const checkHandle = attempt === 0 ? handle : `${handle}${Math.floor(Math.random() * 1000)}`;
-
-            const { data: existingHandle } = await supabaseAdmin
-                .from('users')
-                .select('id')
-                .eq('handle', checkHandle)
-                .single();
-
-            if (!existingHandle) {
-                handle = checkHandle;
-                isHandleUnique = true;
-            }
-            attempt++;
-        }
-
-        if (!isHandleUnique) {
-            handle = `${handle}${Date.now()}`; // Fallback to timestamp if loop fails
-        }
+        // Auto-generate handle from username
+        const handle = `@${username.toLowerCase().replace(/\s+/g, '')}`;
 
         const { data: newUser, error } = await supabaseAdmin
             .from('users')
@@ -65,6 +55,8 @@ export async function POST(request: NextRequest) {
                 password_hash: passwordHash,
                 username,
                 handle,
+                name: username,
+                surname: '',
                 avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
             })
             .select()
