@@ -20,15 +20,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Golden border animation for official posts */
-@keyframes gradient {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
+/* Safe area for mobile devices (iPhone home bar) */
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  /* iOS 11.0 */
+  padding-bottom: env(safe-area-inset-bottom);
+  /* iOS 11.2+ */
 }

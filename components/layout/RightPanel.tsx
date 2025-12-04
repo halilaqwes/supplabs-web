@@ -33,6 +33,12 @@ export function RightPanel() {
 
             <TrendingSection />
             <SuggestionsSection />
+
+            <div className="mt-auto pt-4 border-t border-gray-200 text-xs text-gray-400 flex flex-wrap gap-2 px-2">
+                <Link href="/legal" className="hover:underline">Yasal Bilgilendirme</Link>
+                <span>·</span>
+                <span>© 2024 SuppLabs</span>
+            </div>
         </div>
     );
 }

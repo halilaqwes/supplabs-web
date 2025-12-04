@@ -255,6 +255,20 @@ export default function SettingsPage() {
                     </button>
                 </div>
 
+                <div className="space-y-1">
+                    <h3 className="font-bold text-lg px-2 mb-2">Diğer</h3>
+                    <Link href="/legal" className="w-full flex items-center justify-between p-3 hover:bg-gray-100 rounded-xl transition-colors text-left group">
+                        <div className="flex items-center gap-4">
+                            <Shield className="text-gray-500" />
+                            <div>
+                                <p className="font-medium">Yasal Bilgilendirme</p>
+                                <p className="text-sm text-gray-500">Kullanıcı sözleşmesi ve KVKK</p>
+                            </div>
+                        </div>
+                        <ChevronRight className="text-gray-400 group-hover:text-gray-600" />
+                    </Link>
+                </div>
+
                 <div className="mt-6 px-2">
                     <button onClick={logout} className="w-full flex items-center justify-center gap-3 p-4 bg-red-50 hover:bg-red-100 rounded-xl transition-colors text-red-500 font-semibold">
                         <LogOut size={20} />
