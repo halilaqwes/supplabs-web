@@ -42,7 +42,7 @@ export function Feed() {
     };
 
     return (
-        <div className="pb-20">
+        <div className="pb-24" id="top-of-feed">
             <div className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-gray-200">
                 <div className="flex">
                     <div className="flex-1 py-4 font-bold text-black text-center relative">

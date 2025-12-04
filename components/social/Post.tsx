@@ -151,8 +151,8 @@ export function Post({ post, onUpdate }: PostProps) {
 
     return (
         <div className={cn(
-            "p-4 border-b hover:bg-gray-50 transition-colors cursor-pointer relative",
-            post.isOfficial && "bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border-l-4 border-l-blue-500"
+            "p-6 hover:bg-gray-50/50 transition-colors cursor-pointer relative",
+            post.isOfficial && "bg-gradient-to-r from-blue-50/30 to-indigo-50/30"
         )}>
             <div className="flex gap-3">
                 <Link href={getProfileLink()} onClick={(e) => e.stopPropagation()}>

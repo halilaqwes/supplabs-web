@@ -94,7 +94,7 @@ export function Sidebar() {
             </div>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-between items-center px-6 py-3 z-50">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 flex justify-between items-center px-6 py-3 z-50 safe-area-bottom">
                 {/* Left Side Items */}
                 <div className="flex gap-8">
                     {NAV_ITEMS.slice(0, 2).map((item) => {
@@ -106,7 +106,7 @@ export function Sidebar() {
                                 href={item.href}
                                 className={cn(
                                     "flex flex-col items-center gap-1",
-                                    isActive ? "text-blue-500" : "text-gray-500"
+                                    isActive ? "text-blue-500" : "text-gray-400"
                                 )}
                             >
                                 <Icon size={24} className={cn(isActive && "fill-current")} />
@@ -117,7 +117,10 @@ export function Sidebar() {
 
                 {/* Center FAB */}
                 <div className="absolute left-1/2 -translate-x-1/2 -top-6">
-                    <button className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors">
+                    <button
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors active:scale-95"
+                    >
                         <PlusSquare size={24} />
                     </button>
                 </div>
