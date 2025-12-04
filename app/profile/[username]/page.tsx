@@ -39,7 +39,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
     const [followersList, setFollowersList] = useState<FollowUser[]>([]);
     const [followingList, setFollowingList] = useState<FollowUser[]>([]);
 
-    const isCurrentUser = user?.username === username;
+    const isCurrentUser = user?.id === profileUser?.id;
 
     const fetchProfile = useCallback(async () => {
         try {

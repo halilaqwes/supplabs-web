@@ -187,7 +187,7 @@ export function Post({ post, onUpdate }: PostProps) {
                     </div>
 
                     <div className="mt-1 text-gray-900 whitespace-pre-wrap break-words">
-                        {post.content.split(/(\bhttps?:\/\/[^\s]+)/g).map((part, index) => {
+                        {post.content.split(/(\bhttps?:\/\/[^\s]+|#[a-zA-Z0-9_üğışöçİĞÜŞÖÇ]+)/g).map((part, index) => {
                             // Check if part is a URL
                             if (part.match(/^https?:\/\//)) {
                                 return (
@@ -201,6 +201,20 @@ export function Post({ post, onUpdate }: PostProps) {
                                     >
                                         {part}
                                     </a>
+                                );
+                            }
+                            // Check if part is a hashtag
+                            if (part.startsWith('#')) {
+                                const tag = part.substring(1);
+                                return (
+                                    <Link
+                                        key={index}
+                                        href={`/hashtag/${tag}`}
+                                        className="font-bold text-blue-500 hover:underline"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {part}
+                                    </Link>
                                 );
                             }
                             return <span key={index}>{part}</span>;
