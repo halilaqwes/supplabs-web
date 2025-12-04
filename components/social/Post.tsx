@@ -186,7 +186,7 @@ export function Post({ post, onUpdate }: PostProps) {
                         )}
                     </div>
 
-                    <div className="mt-1 text-gray-900 whitespace-pre-wrap">
+                    <div className="mt-1 text-gray-900 whitespace-pre-wrap break-words">
                         {post.content.split(/(\bhttps?:\/\/[^\s]+)/g).map((part, index) => {
                             // Check if part is a URL
                             if (part.match(/^https?:\/\//)) {

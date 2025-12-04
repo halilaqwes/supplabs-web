@@ -25,7 +25,7 @@ export default function RootLayout({
           <StoreProvider>
             <div className="container mx-auto max-w-7xl flex min-h-screen">
               <Sidebar />
-              <main className="flex-1 border-r border-gray-200 min-h-screen">
+              <main className="flex-1 border-r border-gray-200 min-h-screen w-full max-w-full overflow-x-hidden">
                 {children}
               </main>
               <RightPanel />
