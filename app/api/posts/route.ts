@@ -18,7 +18,9 @@ export async function GET(request: NextRequest) {
           username,
           handle,
           avatar,
-          is_verified
+          is_verified,
+          is_official,
+          role
         ),
         likes:likes(user_id)
       `)
@@ -71,6 +73,8 @@ export async function GET(request: NextRequest) {
                 handle: post.users.handle,
                 avatar: post.users.avatar,
                 isVerified: post.users.is_verified,
+                isOfficial: post.users.is_official,
+                role: post.users.role,
                 content: post.content,
                 image: post.image,
                 video: post.video,
@@ -119,7 +123,9 @@ export async function POST(request: NextRequest) {
           username,
           handle,
           avatar,
-          is_verified
+          is_verified,
+          is_official,
+          role
         )
       `)
             .single();
@@ -139,6 +145,8 @@ export async function POST(request: NextRequest) {
             handle: post.users.handle,
             avatar: post.users.avatar,
             isVerified: post.users.is_verified,
+            isOfficial: post.users.is_official,
+            role: post.users.role,
             content: post.content,
             image: post.image,
             video: post.video,
