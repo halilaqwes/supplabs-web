@@ -33,6 +33,7 @@ export interface Post {
     handle: string;
     avatar: string;
     isVerified?: boolean;
+    isOfficial?: boolean;
     content: string;
     image?: string;
     video?: string;

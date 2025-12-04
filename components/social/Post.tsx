@@ -5,6 +5,7 @@ import { Heart, MessageCircle, Repeat, Share, Send, Trash2 } from "lucide-react"
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
+import { OfficialBadge } from "@/components/ui/OfficialBadge";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -165,6 +166,7 @@ export function Post({ post, onUpdate }: PostProps) {
                                 {post.username}
                             </Link>
                             {post.isVerified && <VerifiedBadge size={16} />}
+                            {post.isOfficial && <OfficialBadge size={18} />}
                             <span className="truncate">{post.handle}</span>
                             <span>·</span>
                             <span>{post.timestamp}</span>
