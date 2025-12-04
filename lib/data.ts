@@ -54,20 +54,6 @@ export const CATEGORIES = [
         count: 74,
         image: "https://images.unsplash.com/photo-1526081715774-4b6246f4c7f8?auto=format&fit=crop&q=80&w=600&h=400",
         description: "Pratik protein kaynağı"
-    },
-    {
-        id: "energy-drinks",
-        name: "Enerji İçecekleri",
-        count: 52,
-        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600&h=400",
-        description: "Hızlı enerji ve odaklanma"
-    },
-    {
-        id: "electrolytes",
-        name: "Elektrolit & Hidrasyon",
-        count: 41,
-        image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600&h=400",
-        description: "Egzersiz sırasında hidrasyon desteği"
     }
 ];
 
@@ -284,54 +270,6 @@ export const PRODUCTS = [
         image: "https://images.unsplash.com/photo-1526081715774-4b6246f4c7f8?auto=format&fit=crop&q=80&w=300&h=300",
         votes: 445,
         description: "23g protein, düşük karbonhidrat"
-    },
-
-    // Energy Drinks
-    {
-        id: "19",
-        name: "Bang Energy Drink",
-        brand: "VPX",
-        category: "energy-drinks",
-        price: 45,
-        rating: 9.0,
-        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=300&h=300",
-        votes: 389,
-        description: "300mg kafein, sıfır kalori enerji içeceği"
-    },
-    {
-        id: "20",
-        name: "Reign Total Body Fuel",
-        brand: "Monster",
-        category: "energy-drinks",
-        price: 42,
-        rating: 8.8,
-        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=300&h=300",
-        votes: 301,
-        description: "300mg kafein, BCAA ve CoQ10"
-    },
-
-    // Electrolytes
-    {
-        id: "21",
-        name: "Xtend Hydration",
-        brand: "Scivation",
-        category: "electrolytes",
-        price: 749,
-        rating: 9.3,
-        image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=300&h=300",
-        votes: 267,
-        description: "BCAA ve elektrolit karışımı"
-    },
-    {
-        id: "22",
-        name: "Intra-Workout",
-        brand: "Transparent Labs",
-        category: "electrolytes",
-        price: 849,
-        rating: 9.1,
-        image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=300&h=300",
-        votes: 198,
-        description: "İdeal elektrolit dengesi"
     }
 ];
 
