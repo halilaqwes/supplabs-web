@@ -28,6 +28,7 @@ export async function GET(
         const {
             password_hash,
             is_verified,
+            is_official,
             followers_count,
             following_count,
             ...userWithoutPassword
@@ -36,6 +37,7 @@ export async function GET(
         const mappedUser = {
             ...userWithoutPassword,
             isVerified: is_verified,
+            isOfficial: is_official,
             followers: followers_count,
             following: following_count
         };
