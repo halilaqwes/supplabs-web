@@ -135,6 +135,22 @@ export default function SettingsPage() {
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Biyografi</label>
+                            <textarea
+                                value={user?.bio || ''}
+                                onChange={(e) => {
+                                    if (e.target.value.length <= 160) {
+                                        updateUser({ bio: e.target.value });
+                                    }
+                                }}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                placeholder="Kendinizden bahsedin..."
+                                rows={3}
+                                maxLength={160}
+                            />
+                            <p className="text-xs text-gray-500 mt-1">{user?.bio?.length || 0}/160 karakter</p>
+                        </div>
                         <button type="submit" className="w-full bg-blue-500 text-white font-bold py-3 rounded-full hover:bg-blue-600 transition-colors">
                             Kaydet
                         </button>

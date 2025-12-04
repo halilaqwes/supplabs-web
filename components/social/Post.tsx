@@ -278,15 +278,47 @@ export function Post({ post, onUpdate }: PostProps) {
 
                     <div className="space-y-4">
                         {comments.map((comment) => (
-                            <div key={comment.id} className="flex gap-3">
+                            <div key={comment.id} className="flex gap-3 group">
                                 <img src={comment.avatar} alt={comment.username} className="w-8 h-8 rounded-full" />
-                                <div>
+                                <div className="flex-1">
                                     <div className="flex items-center gap-2">
                                         <span className="font-bold text-sm">{comment.username}</span>
                                         <span className="text-gray-500 text-xs">{comment.timestamp}</span>
                                     </div>
                                     <p className="text-sm text-gray-800">{comment.content}</p>
                                 </div>
+                                {/* Show delete button if admin OR comment owner */}
+                                {(user?.role === 'admin' || user?.id === comment.userId) && (
+                                    <button
+                                        onClick={async (e) => {
+                                            e.stopPropagation();
+                                            if (!confirm('Bu yorumu silmek istediğinizden emin misiniz?')) return;
+
+                                            try {
+                                                const response = await fetch(`/api/posts/${post.id}/comments/${comment.id}`, {
+                                                    method: 'DELETE',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ userId: user.id })
+                                                });
+
+                                                if (response.ok) {
+                                                    // Remove comment from local state
+                                                    setComments(comments.filter(c => c.id !== comment.id));
+                                                    setCommentCount(prev => prev - 1);
+                                                } else {
+                                                    alert('Yorum silinemedi');
+                                                }
+                                            } catch (error) {
+                                                console.error('Failed to delete comment', error);
+                                                alert('Yorum silinemedi');
+                                            }
+                                        }}
+                                        className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-50 rounded text-red-500 transition-all"
+                                        title="Yorumu sil"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>

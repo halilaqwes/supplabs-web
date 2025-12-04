@@ -6,6 +6,8 @@ export interface User {
     avatar: string;
     bio?: string;
     isVerified?: boolean;
+    isOfficial?: boolean;
+    role?: string;
     followers: number;
     following: number;
     followingIds?: string[];
@@ -17,6 +19,7 @@ export interface User {
 export interface Comment {
     id: string;
     userId: string;
+    postId?: string;
     username: string;
     avatar: string;
     content: string;

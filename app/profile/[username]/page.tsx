@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { User, Post as PostType } from "@/types";
 import { Post } from "@/components/social/Post";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
+import { OfficialBadge } from "@/components/ui/OfficialBadge";
 import { Calendar, MapPin, Link as LinkIcon, ArrowLeft, X } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -254,6 +255,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                     <h1 className="font-bold text-xl flex items-center gap-1">
                         {profileUser.username}
                         {profileUser.isVerified && <VerifiedBadge size={16} />}
+                        {profileUser.isOfficial && <OfficialBadge size={18} />}
                     </h1>
                     <p className="text-gray-500 text-sm">{posts.length} gönderi</p>
                 </div>
@@ -308,22 +310,60 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                 <div className="flex items-center gap-1 mb-1">
                     <h2 className="font-bold text-xl">{profileUser.username}</h2>
                     {profileUser.isVerified && <VerifiedBadge />}
+                    {profileUser.isOfficial && <OfficialBadge size={22} />}
                 </div>
                 <p className="text-gray-500 mb-4">{profileUser.handle}</p>
-                <p className="mb-4">{profileUser.bio || "Henüz biyografi eklenmemiş."}</p>
+                <div className="mb-4">
+                    {profileUser.bio ? (
+                        profileUser.bio.split(/(\bhttps?:\/\/[^\s]+)/g).map((part, index) => {
+                            if (part.match(/^https?:\/\//)) {
+                                return (
+                                    <a
+                                        key={index}
+                                        href={part}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 hover:underline"
+                                    >
+                                        {part}
+                                    </a>
+                                );
+                            }
+                            return <span key={index}>{part}</span>;
+                        })
+                    ) : (
+                        <span className="text-gray-500">Henüz biyografi eklenmemiş.</span>
+                    )}
+                </div>
 
                 <div className="flex gap-4 mb-6">
                     <button
-                        onClick={() => setShowFollowModal('following')}
-                        className="hover:underline"
+                        onClick={() => {
+                            if (profileUser.isOfficial && user?.role !== 'admin' && user?.id !== profileUser.id) {
+                                return; // Block for official accounts (non-admin)
+                            }
+                            setShowFollowModal('following');
+                        }}
+                        className={profileUser.isOfficial && user?.role !== 'admin' && user?.id !== profileUser.id ? '' : 'hover:underline'}
                     >
-                        <span className="font-bold">{followingCount}</span> <span className="text-gray-500"> Takip Edilen</span>
+                        <span className="font-bold">
+                            {profileUser.isOfficial && user?.role !== 'admin' && user?.id !== profileUser.id ? '-' : followingCount}
+                        </span>
+                        <span className="text-gray-500"> Takip Edilen</span>
                     </button>
                     <button
-                        onClick={() => setShowFollowModal('followers')}
-                        className="hover:underline"
+                        onClick={() => {
+                            if (profileUser.isOfficial && user?.role !== 'admin' && user?.id !== profileUser.id) {
+                                return; // Block for official accounts (non-admin)
+                            }
+                            setShowFollowModal('followers');
+                        }}
+                        className={profileUser.isOfficial && user?.role !== 'admin' && user?.id !== profileUser.id ? '' : 'hover:underline'}
                     >
-                        <span className="font-bold">{followersCount}</span> <span className="text-gray-500"> Takipçi</span>
+                        <span className="font-bold">
+                            {profileUser.isOfficial && user?.role !== 'admin' && user?.id !== profileUser.id ? '-' : followersCount}
+                        </span>
+                        <span className="text-gray-500"> Takipçi</span>
                     </button>
                 </div>
             </div>
