@@ -3,56 +3,56 @@ export const CATEGORIES = [
         id: "pre-workout",
         name: "Pre-Workout",
         count: 127,
-        image: "https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/smash-pro.png",
         description: "Antrenman öncesi enerji ve performans"
     },
     {
         id: "protein-powder",
         name: "Protein Tozları",
         count: 156,
-        image: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/protein-powder.png",
         description: "Whey, kazein ve bitkisel protein"
     },
     {
         id: "creatine",
         name: "Kreatin",
         count: 45,
-        image: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/creatine.png",
         description: "Güç ve kas artışı için kreatin monohydrate"
     },
     {
         id: "bcaa",
         name: "BCAA & Amino Asitler",
         count: 89,
-        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/bcaa.png",
         description: "Kas koruması ve toparlanma"
     },
     {
         id: "mass-gainer",
         name: "Kilo Alıcılar",
         count: 38,
-        image: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/mass-gainer.png",
         description: "Yüksek kalorili kas kütlesi artırıcılar"
     },
     {
         id: "fat-burners",
         name: "Yağ Yakıcılar",
         count: 67,
-        image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/fat-burners.png",
         description: "Metabolizma hızlandırıcı ve yağ yakıcı"
     },
     {
         id: "vitamins",
         name: "Vitaminler & Mineraller",
         count: 203,
-        image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/vitamins.png",
         description: "Genel sağlık ve bağışıklık desteği"
     },
     {
         id: "protein-bars",
         name: "Protein Barları",
         count: 74,
-        image: "https://images.unsplash.com/photo-1526081715774-4b6246f4c7f8?auto=format&fit=crop&q=80&w=600&h=400",
+        image: "/images/protein-bars.png",
         description: "Pratik protein kaynağı"
     }
 ];

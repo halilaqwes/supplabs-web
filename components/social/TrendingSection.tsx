@@ -27,6 +27,7 @@ export function TrendingSection() {
 
         return Array.from(hashtagMap.entries())
             .map(([tag, count]) => ({ tag, count }))
+            .filter(item => !['protein', 'test'].includes(item.tag.toLowerCase()))
             .sort((a, b) => b.count - a.count)
             .slice(0, 5);
     }, [posts]);

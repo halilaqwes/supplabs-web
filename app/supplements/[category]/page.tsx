@@ -21,8 +21,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     <ArrowLeft size={20} />
                 </Link>
                 <div>
-                    <h1 className="text-xl font-bold">{category.name} Rankings</h1>
-                    <p className="text-gray-500 text-sm">{categoryProducts.length} Products Ranked</p>
+                    <h1 className="text-xl font-bold">{category.name} Sıralama</h1>
+                    <p className="text-gray-500 text-sm">{categoryProducts.length} Ürün Sıralandı</p>
                 </div>
             </div>
 

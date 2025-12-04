@@ -11,7 +11,7 @@ export function CategoryGrid() {
                     className="group relative block rounded-2xl p-[2px] bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                 >
                     <div className="bg-white rounded-2xl p-4 h-full flex items-center gap-6">
-                        <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-xl p-2 flex items-center justify-center">
+                        <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-xl flex items-center justify-center">
                             <img
                                 src={category.image}
                                 alt={category.name}
@@ -20,12 +20,9 @@ export function CategoryGrid() {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors truncate">
+                            <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
                                 {category.name}
                             </h3>
-                            <p className="text-gray-500 text-sm font-medium">
-                                {category.count} ürün
-                            </p>
                         </div>
 
                         <div className="text-gray-300 group-hover:text-blue-500 transition-colors">
