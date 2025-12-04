@@ -138,8 +138,12 @@ export default function SettingsPage() {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Biyografi</label>
                             <textarea
-                                value={user?.bio || ''}
+                                defaultValue={user?.bio || ''}
                                 onChange={(e) => {
+                                    // Just update local input, not global state yet
+                                }}
+                                onBlur={(e) => {
+                                    // Update when user finishes typing (loses focus)
                                     if (e.target.value.length <= 160) {
                                         updateUser({ bio: e.target.value });
                                     }
@@ -149,7 +153,7 @@ export default function SettingsPage() {
                                 rows={3}
                                 maxLength={160}
                             />
-                            <p className="text-xs text-gray-500 mt-1">{user?.bio?.length || 0}/160 karakter</p>
+                            <p className="text-xs text-gray-500 mt-1">Maksimum 160 karakter</p>
                         </div>
                         <button type="submit" className="w-full bg-blue-500 text-white font-bold py-3 rounded-full hover:bg-blue-600 transition-colors">
                             Kaydet
