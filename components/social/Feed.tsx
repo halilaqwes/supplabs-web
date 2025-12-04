@@ -20,7 +20,11 @@ export function Feed() {
             const response = await fetch(url);
             if (response.ok) {
                 const data = await response.json();
-                setPosts(data.posts);
+                // Filter to only show SuppLabs official posts
+                const suppLabsPosts = data.posts.filter((post: PostType) =>
+                    post.handle === '@supplabs' || post.username.toLowerCase().includes('supplabs')
+                );
+                setPosts(suppLabsPosts);
             }
         } catch (error) {
             console.error("Failed to fetch posts", error);

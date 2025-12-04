@@ -152,17 +152,8 @@ export function Post({ post, onUpdate }: PostProps) {
     return (
         <div className={cn(
             "p-4 border-b hover:bg-gray-50 transition-colors cursor-pointer relative",
-            post.isOfficial && "bg-gradient-to-r from-yellow-50/30 to-amber-50/30"
+            post.isOfficial && "bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border-l-4 border-l-blue-500"
         )}>
-            {/* Golden border for official posts */}
-            {post.isOfficial && (
-                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400 bg-[length:200%_100%] animate-[gradient_3s_ease-in-out_infinite] rounded-sm pointer-events-none" style={{
-                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    WebkitMaskComposite: 'xor',
-                    maskComposite: 'exclude',
-                    padding: '1px'
-                }} />
-            )}
             <div className="flex gap-3">
                 <Link href={getProfileLink()} onClick={(e) => e.stopPropagation()}>
                     <img
