@@ -29,7 +29,7 @@ export default function LoginPage() {
                 <div className="flex justify-center mb-8">
                     <img src="/logo.jpg" alt="SuppLabs" className="w-16 h-16 object-contain" />
                 </div>
-                <h2 className="text-2xl font-bold mb-6 text-center">Sign in to SuppLabs</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center">SuppLabs'e Giriş Yap</h2>
 
                 {error && (
                     <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-4 text-sm text-center">
@@ -39,25 +39,25 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                            placeholder="Enter your email"
+                            placeholder="E-posta adresinizi girin"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                            placeholder="Enter your password"
+                            placeholder="Şifrenizi girin"
                             required
                         />
                     </div>
@@ -66,13 +66,13 @@ export default function LoginPage() {
                         type="submit"
                         className="w-full bg-black text-white font-bold py-3 rounded-full hover:bg-gray-800 transition-colors"
                     >
-                        Sign In
+                        Giriş Yap
                     </button>
                 </form>
 
                 <div className="mt-6 text-center">
-                    <p className="text-gray-500">Don't have an account? <Link href="/register" className="text-blue-500 hover:underline">Sign up</Link></p>
-                    <p className="mt-2 text-sm text-gray-400">Forgot password?</p>
+                    <p className="text-gray-500">Hesabınız yok mu? <Link href="/register" className="text-blue-500 hover:underline">Kayıt Ol</Link></p>
+                    <p className="mt-2 text-sm text-gray-400">Şifrenizi mi unuttunuz?</p>
                 </div>
             </div>
         </div>

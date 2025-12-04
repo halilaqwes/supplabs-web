@@ -233,16 +233,6 @@ export default function SettingsPage() {
                         </div>
                         <ChevronRight className="text-gray-400 group-hover:text-gray-600" />
                     </button>
-                    <button className="w-full flex items-center justify-between p-3 hover:bg-gray-100 rounded-xl transition-colors text-left group">
-                        <div className="flex items-center gap-4">
-                            <Bell className="text-gray-500" />
-                            <div>
-                                <p className="font-medium">Bildirimler</p>
-                                <p className="text-sm text-gray-500">Almak istediğiniz bildirimleri seçin</p>
-                            </div>
-                        </div>
-                        <ChevronRight className="text-gray-400 group-hover:text-gray-600" />
-                    </button>
                 </div>
 
                 <div className="mt-6 px-2">

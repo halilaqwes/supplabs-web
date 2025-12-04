@@ -12,6 +12,14 @@ import { cn } from "@/lib/utils";
 
 type Tab = "posts" | "replies" | "media" | "likes";
 
+interface FollowUser {
+    id: string;
+    username: string;
+    handle: string;
+    avatar: string;
+    isVerified: boolean;
+}
+
 export default function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
     const { username: rawUsername } = React.use(params);
     const username = decodeURIComponent(rawUsername);
@@ -27,6 +35,8 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
     const [followersCount, setFollowersCount] = useState(0);
     const [followingCount, setFollowingCount] = useState(0);
     const [likedPosts, setLikedPosts] = useState<PostType[]>([]);
+    const [followersList, setFollowersList] = useState<FollowUser[]>([]);
+    const [followingList, setFollowingList] = useState<FollowUser[]>([]);
 
     const isCurrentUser = user?.username === username;
 
@@ -34,12 +44,6 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
         try {
             setIsLoading(true);
             // Fetch user profile
-            // The param 'username' is actually the handle from the URL (without @)
-            // We need to tell the API to search by handle OR username
-            // Ideally we pass a query param or the API handles it.
-            // Let's assume the API will be updated to search by handle if it starts with @ or just matches handle.
-            // Since we removed @ from URL, we might want to add it back for search if we search by handle.
-            // But let's update the API to be smart.
             const userRes = await fetch(`/api/users/${username}`);
             if (!userRes.ok) {
                 if (userRes.status === 404) return null;
@@ -50,17 +54,13 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
             setFollowersCount(userData.user.followers || 0);
             setFollowingCount(userData.user.following || 0);
 
-            // Check if following
+            // Check follow status from API
             if (user && userData.user.id !== user.id) {
-                // In a real app, we should have an endpoint to check this efficiently
-                // For now, we rely on the user object's followingIds if available, 
-                // or we could fetch the follow status. 
-                // Let's assume user.followingIds is updated or we can check via API if needed.
-                // Since we don't have a specific "check follow" endpoint, we'll rely on client side check if possible
-                // or add an endpoint. For now, let's assume user.followingIds is accurate enough or 
-                // we can fetch the relationship status.
-                // Actually, let's just use the user context for now if available.
-                setIsFollowing(user.followingIds?.includes(userData.user.id) || false);
+                const statusRes = await fetch(`/api/users/${username}/follow-status?userId=${user.id}`);
+                if (statusRes.ok) {
+                    const statusData = await statusRes.json();
+                    setIsFollowing(statusData.isFollowing);
+                }
             }
 
             // Fetch user posts
@@ -101,7 +101,43 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
         fetchLikedPosts();
     }, [activeTab, username]);
 
-    if (isLoading) {
+    // Fetch followers list
+    useEffect(() => {
+        const fetchFollowers = async () => {
+            if (showFollowModal === 'followers') {
+                try {
+                    const response = await fetch(`/api/users/${username}/followers`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setFollowersList(data.followers);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch followers", error);
+                }
+            }
+        };
+        fetchFollowers();
+    }, [showFollowModal, username]);
+
+    // Fetch following list
+    useEffect(() => {
+        const fetchFollowing = async () => {
+            if (showFollowModal === 'following') {
+                try {
+                    const response = await fetch(`/api/users/${username}/following`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setFollowingList(data.following);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch following", error);
+                }
+            }
+        };
+        fetchFollowing();
+    }, [showFollowModal, username]);
+
+    if (isLoading && !profileUser) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -125,9 +161,6 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                 const data = await response.json();
                 setIsFollowing(data.following);
                 setFollowersCount(prev => data.following ? prev + 1 : prev - 1);
-
-                // Update local user context if needed
-                // updateUser({ followingIds: ... }) - this would require more complex logic
             }
         } catch (error) {
             console.error("Follow action failed:", error);
@@ -145,9 +178,6 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
         if (file) {
             const url = URL.createObjectURL(file);
             // In real app, upload to server
-            // For now just update local state via API
-            // updateUser({ avatar: url });
-            // We need an API to update profile
         }
     };
 
@@ -156,7 +186,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
             case "posts":
                 return posts;
             case "replies":
-                return []; // We don't fetch replies yet
+                return [];
             case "media":
                 return posts.filter(p => p.image || p.video);
             case "likes":
@@ -237,10 +267,16 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                 <p className="mb-4">{profileUser.bio || "Henüz biyografi eklenmemiş."}</p>
 
                 <div className="flex gap-4 mb-6">
-                    <button className="hover:underline">
+                    <button
+                        onClick={() => setShowFollowModal('following')}
+                        className="hover:underline"
+                    >
                         <span className="font-bold">{followingCount}</span> <span className="text-gray-500"> Takip Edilen</span>
                     </button>
-                    <button className="hover:underline">
+                    <button
+                        onClick={() => setShowFollowModal('followers')}
+                        className="hover:underline"
+                    >
                         <span className="font-bold">{followersCount}</span> <span className="text-gray-500"> Takipçi</span>
                     </button>
                 </div>
@@ -282,6 +318,58 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                     </div>
                 )}
             </div>
+
+            {/* Follow Modal */}
+            {showFollowModal && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowFollowModal(null)}>
+                    <div className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+                            <h2 className="text-xl font-bold">
+                                {showFollowModal === 'followers' ? 'Takipçiler' : 'Takip Edilenler'}
+                            </h2>
+                            <button
+                                onClick={() => setShowFollowModal(null)}
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(80vh-80px)]">
+                            {(showFollowModal === 'followers' ? followersList : followingList).length > 0 ? (
+                                <div className="p-4 space-y-3">
+                                    {(showFollowModal === 'followers' ? followersList : followingList).map((followUser) => (
+                                        <Link
+                                            key={followUser.id}
+                                            href={`/profile/${followUser.username}`}
+                                            onClick={() => setShowFollowModal(null)}
+                                            className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                                        >
+                                            <img
+                                                src={followUser.avatar}
+                                                alt={followUser.username}
+                                                className="w-12 h-12 rounded-full object-cover"
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="font-bold truncate">{followUser.username}</span>
+                                                    {followUser.isVerified && <VerifiedBadge size={16} />}
+                                                </div>
+                                                <p className="text-gray-500 text-sm truncate">{followUser.handle}</p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="p-8 text-center text-gray-500">
+                                    {showFollowModal === 'followers'
+                                        ? 'Henüz takipçi yok.'
+                                        : 'Henüz kimse takip edilmiyor.'}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

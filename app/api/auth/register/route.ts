@@ -55,8 +55,6 @@ export async function POST(request: NextRequest) {
                 password_hash: passwordHash,
                 username,
                 handle,
-                name: username,
-                surname: '',
                 avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
             })
             .select()

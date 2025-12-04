@@ -30,7 +30,13 @@ export function Sidebar() {
                 </div>
 
                 <nav className="flex-1 space-y-2">
-                    {NAV_ITEMS.map((item) => {
+                    {NAV_ITEMS.filter(item => {
+                        // Hide Bildirimler and Ayarlar if user is not logged in
+                        if (!user && (item.label === "Bildirimler" || item.label === "Ayarlar")) {
+                            return false;
+                        }
+                        return true;
+                    }).map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
@@ -118,7 +124,13 @@ export function Sidebar() {
 
                 {/* Right Side Items */}
                 <div className="flex gap-8">
-                    {NAV_ITEMS.slice(2).map((item) => {
+                    {NAV_ITEMS.slice(2).filter(item => {
+                        // Hide Bildirimler and Ayarlar if user is not logged in
+                        if (!user && (item.label === "Bildirimler" || item.label === "Ayarlar")) {
+                            return false;
+                        }
+                        return true;
+                    }).map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
