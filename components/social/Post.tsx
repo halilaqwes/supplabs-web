@@ -181,7 +181,26 @@ export function Post({ post, onUpdate }: PostProps) {
                         )}
                     </div>
 
-                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">{post.content}</p>
+                    <div className="mt-1 text-gray-900 whitespace-pre-wrap">
+                        {post.content.split(/(\bhttps?:\/\/[^\s]+)/g).map((part, index) => {
+                            // Check if part is a URL
+                            if (part.match(/^https?:\/\//)) {
+                                return (
+                                    <a
+                                        key={index}
+                                        href={part}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 hover:underline"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {part}
+                                    </a>
+                                );
+                            }
+                            return <span key={index}>{part}</span>;
+                        })}
+                    </div>
 
                     {post.image && (
                         <div className="mt-3 rounded-xl overflow-hidden border border-gray-200">

@@ -25,7 +25,7 @@ export function Sidebar() {
             <div className="hidden md:flex flex-col h-screen sticky top-0 px-4 py-6 border-r border-gray-200 w-[275px]">
                 <div className="mb-8 px-4">
                     <Link href="/feed">
-                        <img src="/logo.jpg" alt="SuppLabs Logo" className="w-12 h-12 object-contain" />
+                        <img src="/logo-new.png" alt="SuppLabs Logo" className="w-12 h-12 object-contain" />
                     </Link>
                 </div>
 

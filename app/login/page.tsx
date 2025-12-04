@@ -27,7 +27,7 @@ export default function LoginPage() {
         <div className="flex min-h-screen items-center justify-center bg-gray-50">
             <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
                 <div className="flex justify-center mb-8">
-                    <img src="/logo.jpg" alt="SuppLabs" className="w-16 h-16 object-contain" />
+                    <img src="/logo-new.png" alt="SuppLabs" className="w-16 h-16 object-contain" />
                 </div>
                 <h2 className="text-2xl font-bold mb-6 text-center">SuppLabs'e Giriş Yap</h2>
 

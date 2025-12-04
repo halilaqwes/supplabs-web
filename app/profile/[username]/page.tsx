@@ -173,11 +173,57 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
         }
     };
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            const url = URL.createObjectURL(file);
-            // In real app, upload to server
+        if (!file || !user) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Lütfen bir resim dosyası seçin');
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Dosya boyutu 5MB\'dan küçük olmalıdır');
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+
+            // Create FormData
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('userId', user.id);
+
+            // Upload to API
+            const response = await fetch('/api/users/upload-avatar', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Upload failed');
+            }
+
+            // Update local state
+            if (profileUser) {
+                setProfileUser({ ...profileUser, avatar: data.avatar });
+            }
+
+            // Update user context
+            updateUser({ avatar: data.avatar });
+
+            alert('Profil resmi güncellendi!');
+
+        } catch (error) {
+            console.error('Avatar upload error:', error);
+            alert('Resim yüklenemedi. Lütfen tekrar deneyin.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
