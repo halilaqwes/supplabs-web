@@ -4,7 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const limit = parseInt(searchParams.get('limit') || '50');
+        const limit = parseInt(searchParams.get('limit') || '10');
         const offset = parseInt(searchParams.get('offset') || '0');
         const userId = searchParams.get('userId');
 
