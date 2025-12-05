@@ -30,11 +30,7 @@ export function Feed() {
             const response = await fetch(url);
             if (response.ok) {
                 const data = await response.json();
-                // Filter to only show SuppLabs official posts
-                const suppLabsPosts = data.posts.filter((post: PostType) =>
-                    post.handle === '@supplabs' || post.username.toLowerCase().includes('supplabs')
-                );
-                setPosts(suppLabsPosts);
+                setPosts(data.posts);
                 setOffset(POSTS_PER_PAGE);
                 setHasMore(data.posts.length === POSTS_PER_PAGE);
             }
@@ -58,12 +54,8 @@ export function Feed() {
             const response = await fetch(url);
             if (response.ok) {
                 const data = await response.json();
-                // Filter to only show SuppLabs official posts
-                const suppLabsPosts = data.posts.filter((post: PostType) =>
-                    post.handle === '@supplabs' || post.username.toLowerCase().includes('supplabs')
-                );
 
-                setPosts(prev => [...prev, ...suppLabsPosts]);
+                setPosts(prev => [...prev, ...data.posts]);
                 setOffset(prev => prev + POSTS_PER_PAGE);
                 setHasMore(data.posts.length === POSTS_PER_PAGE);
             }
