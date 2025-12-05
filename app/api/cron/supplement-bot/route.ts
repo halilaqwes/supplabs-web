@@ -16,18 +16,25 @@ export async function GET(request: NextRequest) {
         let { data: botUser } = await supabaseAdmin
             .from('users')
             .select('id')
-            .eq('username', 'SuppLabs')
+            .eq('username', 'Supp Bilgi Botu')
             .single();
 
         if (!botUser) {
             return NextResponse.json(
-                { error: 'Bot user (SuppLabs) not found. Please create it first.' },
+                { error: 'Bot user (Supp Bilgi Botu) not found. Please create it first.' },
                 { status: 404 }
             );
         }
 
         // Generate supplement tip from Gemini AI
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.0-flash-exp",
+            generationConfig: {
+                temperature: 0.9,
+                topP: 0.95,
+                maxOutputTokens: 200,
+            }
+        });
 
         const prompt = `Supplement hakkında ilginç, kısa ve öğretici bir bilgi ver. 
         Türkçe olsun, 2-3 cümle olsun. 
