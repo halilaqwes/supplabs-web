@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { supabase } from "@/lib/supabase";
 import { ImageIcon, X } from "lucide-react";
 
 interface PostComposerProps {
@@ -53,30 +52,25 @@ export function PostComposer({ onPostCreated }: PostComposerProps) {
         }
     };
 
-    const uploadToSupabase = async (file: File): Promise<string | null> => {
+    const uploadToServer = async (file: File): Promise<string | null> => {
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${user.id}_${Date.now()}.${fileExt}`;
-            const filePath = `posts/${fileName}`;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('userId', user.id);
 
-            const { data, error } = await supabase.storage
-                .from('media')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
+            const response = await fetch('/api/upload/image', {
+                method: 'POST',
+                body: formData
+            });
 
-            if (error) {
-                console.error('Supabase upload error:', error);
-                throw error;
+            if (!response.ok) {
+                const error = await response.json();
+                console.error('Server upload error:', error);
+                return null;
             }
 
-            // Get public URL
-            const { data: { publicUrl } } = supabase.storage
-                .from('media')
-                .getPublicUrl(filePath);
-
-            return publicUrl;
+            const data = await response.json();
+            return data.url;
         } catch (error) {
             console.error('Upload error:', error);
             return null;
@@ -91,7 +85,7 @@ export function PostComposer({ onPostCreated }: PostComposerProps) {
 
             let imageUrl = null;
             if (selectedImage) {
-                imageUrl = await uploadToSupabase(selectedImage);
+                imageUrl = await uploadToServer(selectedImage);
                 if (!imageUrl) {
                     alert('Görsel yüklenemedi. Lütfen tekrar deneyin.');
                     setIsSubmitting(false);
