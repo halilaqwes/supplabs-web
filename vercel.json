@@ -3,6 +3,10 @@
         {
             "path": "/api/cron/cleanup-posts",
             "schedule": "0 2 * * *"
+        },
+        {
+            "path": "/api/cron/supplement-bot",
+            "schedule": "*/59 * * * *"
         }
     ]
 }
