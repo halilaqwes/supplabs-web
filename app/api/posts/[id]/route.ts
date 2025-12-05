@@ -31,7 +31,16 @@ export async function DELETE(
             );
         }
 
-        if (post.user_id !== userId) {
+        // Check if user is admin (SuppLabs) or owns the post
+        const { data: user } = await supabaseAdmin
+            .from('users')
+            .select('username')
+            .eq('id', userId)
+            .single();
+
+        const isAdmin = user?.username === 'SuppLabs';
+
+        if (post.user_id !== userId && !isAdmin) {
             return NextResponse.json(
                 { error: 'Bu gönderiyi silme yetkiniz yok' },
                 { status: 403 }

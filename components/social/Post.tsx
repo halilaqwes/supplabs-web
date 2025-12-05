@@ -176,7 +176,7 @@ export function Post({ post, onUpdate }: PostProps) {
                             <span>{post.timestamp}</span>
                         </div>
 
-                        {user?.id === post.userId && (
+                        {(user?.id === post.userId || user?.username === 'SuppLabs') && (
                             <button
                                 onClick={handleDelete}
                                 className="p-2 hover:bg-red-50 rounded-full text-red-500 transition-colors"
