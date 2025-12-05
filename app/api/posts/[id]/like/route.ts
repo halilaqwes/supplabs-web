@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { sendPushToUser } from '@/lib/firebase-admin';
 
 export async function POST(
     request: NextRequest,
@@ -78,6 +79,26 @@ export async function POST(
                         type: 'like',
                         post_id: postId
                     });
+
+                // Get liker info for push notification
+                const { data: likerInfo } = await supabaseAdmin
+                    .from('users')
+                    .select('username')
+                    .eq('id', userId)
+                    .single();
+
+                // Send push notification
+                if (likerInfo) {
+                    sendPushToUser(post.user_id, {
+                        title: 'Gönderin Beğenildi ❤️',
+                        body: `${likerInfo.username} gönderini beğendi`,
+                        data: {
+                            type: 'like',
+                            postId: postId,
+                            fromUserId: userId
+                        }
+                    }, supabaseAdmin).catch(err => console.error('Push notification error:', err));
+                }
             }
 
             return NextResponse.json(

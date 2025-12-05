@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { sendPushToUser } from '@/lib/firebase-admin';
 
 export async function POST(
     request: NextRequest,
@@ -94,6 +95,25 @@ export async function POST(
                     from_user_id: followerId,
                     type: 'follow'
                 });
+
+            // Get follower info for push notification
+            const { data: followerInfo } = await supabaseAdmin
+                .from('users')
+                .select('username')
+                .eq('id', followerId)
+                .single();
+
+            // Send push notification
+            if (followerInfo) {
+                sendPushToUser(followingId, {
+                    title: 'Yeni Takipçi 🎉',
+                    body: `${followerInfo.username} seni takip etmeye başladı`,
+                    data: {
+                        type: 'follow',
+                        fromUserId: followerId
+                    }
+                }, supabaseAdmin).catch(err => console.error('Push notification error:', err));
+            }
 
             return NextResponse.json(
                 { following: true, message: 'Takip edildi!' },
