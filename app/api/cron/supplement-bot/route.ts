@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+// Initialize lazily inside handler to prevent build crashes
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function GET(request: NextRequest) {
     try {
@@ -25,6 +26,12 @@ export async function GET(request: NextRequest) {
                 { status: 404 }
             );
         }
+
+        if (!process.env.GEMINI_API_KEY) {
+            return NextResponse.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
         // Generate supplement tip from Gemini AI
         const model = genAI.getGenerativeModel({
