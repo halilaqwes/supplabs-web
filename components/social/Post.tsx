@@ -2,6 +2,7 @@
 
 import { Post as PostType } from "@/types";
 import { Heart, MessageCircle, Repeat, Share, Send, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
@@ -222,8 +223,16 @@ export function Post({ post, onUpdate }: PostProps) {
                     </div>
 
                     {post.image && (
-                        <div className="mt-3 rounded-xl overflow-hidden border border-gray-200">
-                            <img src={post.image} alt="Post content" className="w-full h-auto" />
+                        <div className="mt-3 rounded-xl overflow-hidden border border-gray-200 relative w-full">
+                            <Image
+                                src={post.image}
+                                alt="Post content"
+                                width={600}
+                                height={400}
+                                className="w-full h-auto"
+                                style={{ objectFit: 'contain' }}
+                                unoptimized={false}
+                            />
                         </div>
                     )}
 

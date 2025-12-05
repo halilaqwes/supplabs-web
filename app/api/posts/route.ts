@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        const { userId, content } = await request.json();
+        const { userId, content, image } = await request.json();
 
         if (!userId || !content) {
             return NextResponse.json(
@@ -114,7 +114,8 @@ export async function POST(request: NextRequest) {
             .from('posts')
             .insert({
                 user_id: userId,
-                content
+                content,
+                image: image || null
             })
             .select(`
         *,
