@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { StoreProvider } from "@/context/StoreContext";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { RightPanel } from "@/components/layout/RightPanel";
+import { PushNotificationProvider } from "@/components/providers/PushNotificationProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,13 +33,15 @@ export default function RootLayout({
       <body className={inter.className} suppressHydrationWarning>
         <AuthProvider>
           <StoreProvider>
-            <div className="container mx-auto max-w-7xl flex min-h-screen">
-              <Sidebar />
-              <main className="flex-1 border-r border-gray-200 min-h-screen w-full max-w-full overflow-x-hidden">
-                {children}
-              </main>
-              <RightPanel />
-            </div>
+            <PushNotificationProvider>
+              <div className="container mx-auto max-w-7xl flex min-h-screen">
+                <Sidebar />
+                <main className="flex-1 border-r border-gray-200 min-h-screen w-full max-w-full overflow-x-hidden">
+                  {children}
+                </main>
+                <RightPanel />
+              </div>
+            </PushNotificationProvider>
           </StoreProvider>
         </AuthProvider>
       </body>
