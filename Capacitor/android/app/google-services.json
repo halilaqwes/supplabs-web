@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "900900398773",
+    "project_id": "supplabs-9639c",
+    "storage_bucket": "supplabs-9639c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900900398773:android:ad655c4301161c155680fc",
+        "android_client_info": {
+          "package_name": "com.supplabs.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900900398773-7jrkgdr9ki3712qgs7kc2amlgabft9te.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyavnRAfJ5uKEzlCQ0BTsaC2ryZ1YbTa4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "900900398773-7jrkgdr9ki3712qgs7kc2amlgabft9te.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
