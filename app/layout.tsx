@@ -13,6 +13,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "SuppLabs",
   description: "The ultimate social platform for supplement enthusiasts.",
+  verification: {
+    google: "Xssr0bT9DnkeBROYNPGHxCCgOpal7Q64yaEMkIwwg2Q",
+  },
 };
 
 export default function RootLayout({

@@ -29,8 +29,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
             {categoryProducts.length > 0 ? (
                 <>
-                    {categoryId === 'pre-workout' ? (
-                        <RankingList />
+                    {categoryId === 'pre-workout' || categoryId === 'protein-powder' ? (
+                        <RankingList category={categoryId} />
                     ) : (
                         <ProductList products={categoryProducts} />
                     )}
