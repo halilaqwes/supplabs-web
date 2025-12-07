@@ -87,7 +87,7 @@ export function TrendingSection() {
                 href="#"
                 onClick={(e) => {
                     e.preventDefault();
-                    alert('iOS Kullanıcıları için:\n\n1. Safari ile www.supplabs.xyz adresini açın\n2. Paylaş butonuna tıklayın\n3. "Ana Ekrana Ekle" seçeneğini seçin\n4. Uygulama ana ekranınıza eklenecek!');
+                    alert('iOS Kullanıcıları için:\n\n1. Safari ile www.supplabs.com.tr adresini açın\n2. Paylaş butonuna tıklayın\n3. "Ana Ekrana Ekle" seçeneğini seçin\n4. Uygulama ana ekranınıza eklenecek!');
                 }}
                 className="mt-4 block w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
             >

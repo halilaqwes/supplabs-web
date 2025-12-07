@@ -1,6 +1,6 @@
 # 🔄 Capacitor Config Değiştirme Rehberi
 
-Bu rehber development (localhost) ve production (supplabs.xyz) modları arasında nasıl geçiş yapacağınızı gösterir.
+Bu rehber development (localhost) ve production (supplabs.com.tr) modları arasında nasıl geçiş yapacağınızı gösterir.
 
 ## 📁 Mevcut Dosyalar
 
@@ -8,7 +8,7 @@ Bu rehber development (localhost) ve production (supplabs.xyz) modları arasınd
 Capacitor/
 ├── capacitor.config.ts              # ← Aktif config (şu anda: localhost)
 ├── capacitor.config.dev.ts          # Development (localhost:3000)
-└── capacitor.config.production.ts   # Production (supplabs.xyz)
+└── capacitor.config.production.ts   # Production (supplabs.com.tr)
 ```
 
 ## 🧪 Development Modu (Localhost)
@@ -48,7 +48,7 @@ npx cap sync
 ```
 
 **Ayarlar:**
-- URL: `https://www.supplabs.xyz`
+- URL: `https://www.supplabs.com.tr`
 - Debugging: Kapalı
 - HTTPS: Güvenli bağlantı
 
@@ -78,7 +78,7 @@ npx cap sync
 `capacitor.config.ts` dosyasını açın ve `server.url` satırına bakın:
 
 - `http://localhost:3000` → Development modu
-- `https://www.supplabs.xyz` → Production modu
+- `https://www.supplabs.com.tr` → Production modu
 
 ## 📱 Önerilen Workflow
 
@@ -114,7 +114,7 @@ Production mode → Release APK → Dağıt
 
 > [!WARNING]
 > **Production'da Dikkat**
-> - supplabs.xyz çalışıyor olmalı
+> - supplabs.com.tr çalışıyor olmalı
 > - Tüm API'ler production'da hazır olmalı
 > - HTTPS sertifikası geçerli olmalı
 
@@ -132,7 +132,7 @@ Production mode → Release APK → Dağıt
 - IP adresinizi config'e ekleyin (192.168.x.x:3000)
 
 **Production modunda:**
-- supplabs.xyz sitesi çalışıyor mu kontrol edin
+- supplabs.com.tr sitesi çalışıyor mu kontrol edin
 - İnternet bağlantınızı kontrol edin
 
 ### Değişiklikler yansımıyor

@@ -10,14 +10,18 @@ const config: CapacitorConfig = {
     bundledWebRuntime: false,
     server: {
         // Production URL - SuppLabs website
-        url: 'https://www.supplabs.xyz',
-        cleartext: false,
+        url: 'https://www.supplabs.com.tr/',
+        allowNavigation: [
+            'supplabs.com.tr',
+            '*.supplabs.com.tr'
+        ],
+        cleartext: true,
         androidScheme: 'https'
     },
     android: {
-        allowMixedContent: false,
+        allowMixedContent: true,
         captureInput: true,
-        webContentsDebuggingEnabled: false  // Production'da false olmalı
+        webContentsDebuggingEnabled: false
     }
 };
 

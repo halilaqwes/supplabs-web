@@ -5,11 +5,15 @@ const config: CapacitorConfig = {
     appName: 'SuppLabs',
     webDir: 'www',
     server: {
-        url: 'https://supplabs.xyz',
-        cleartext: false
+        url: 'https://www.supplabs.com.tr/',
+        allowNavigation: [
+            'supplabs.com.tr',
+            '*.supplabs.com.tr'
+        ],
+        cleartext: true
     },
     android: {
-        allowMixedContent: false,
+        allowMixedContent: true,
         captureInput: true,
         webContentsDebuggingEnabled: true
     }
