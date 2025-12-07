@@ -22,15 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
+      <body className={inter.className} suppressHydrationWarning>
         <Script
-          async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5742424528253023"
           crossOrigin="anonymous"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
-      </head>
-      <body className={inter.className} suppressHydrationWarning>
         <AuthProvider>
           <StoreProvider>
             <PushNotificationProvider>

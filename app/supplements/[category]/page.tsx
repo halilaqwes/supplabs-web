@@ -1,4 +1,5 @@
 import { ProductList } from "@/components/supplements/ProductList";
+import { RankingList } from "@/components/supplements/RankingList";
 import { PRODUCTS, CATEGORIES } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -27,7 +28,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             </div>
 
             {categoryProducts.length > 0 ? (
-                <ProductList products={categoryProducts} />
+                <>
+                    {categoryId === 'pre-workout' ? (
+                        <RankingList />
+                    ) : (
+                        <ProductList products={categoryProducts} />
+                    )}
+                </>
             ) : (
                 <div className="p-8 text-center text-gray-500">
                     No products found in this category yet.
