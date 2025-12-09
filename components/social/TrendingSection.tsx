@@ -29,7 +29,7 @@ export function TrendingSection() {
             .map(([tag, count]) => ({ tag, count }))
             .filter(item => !['protein', 'test'].includes(item.tag.toLowerCase()))
             .sort((a, b) => b.count - a.count)
-            .slice(0, 5);
+            .slice(0, 4);
     }, [posts]);
 
     return (
@@ -55,10 +55,23 @@ export function TrendingSection() {
                 </div>
             )}
 
+            {/* Knowledge Base Button - Moved from Sidebar */}
+            <Link
+                href="/knowledge"
+                className={`${trendingHashtags.length > 0 ? 'mt-4' : ''} block w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow text-center`}
+            >
+                <span className="flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                    Bilgi Kütüphanesi
+                </span>
+            </Link>
+
             {/* AI Analysis Button - Always visible */}
             <Link
                 href="/supplements/ai-analysis"
-                className={`${trendingHashtags.length > 0 ? 'mt-4' : ''} block w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center`}
+                className="mt-4 block w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
             >
                 <span className="flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -82,14 +95,14 @@ export function TrendingSection() {
                 </span>
             </a>
 
-            {/* iOS Button - PWA Instructions */}
+            {/* iOS Button - CHANGED TO BLACK */}
             <a
                 href="#"
                 onClick={(e) => {
                     e.preventDefault();
                     alert('iOS Kullanıcıları için:\n\n1. Safari ile www.supplabs.com.tr adresini açın\n2. Paylaş butonuna tıklayın\n3. "Ana Ekrana Ekle" seçeneğini seçin\n4. Uygulama ana ekranınıza eklenecek!');
                 }}
-                className="mt-4 block w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
+                className="mt-4 block w-full bg-black text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
             >
                 <span className="flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
