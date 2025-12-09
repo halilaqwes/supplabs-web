@@ -1,16 +1,16 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { BadgeCheck, Shield, User, Bell, ChevronRight, ArrowLeft, LogOut } from "lucide-react";
+import { BadgeCheck, Shield, User, Bell, ChevronRight, ArrowLeft, LogOut, Store } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 import { useRouter } from "next/navigation";
 
-type SettingsView = "main" | "account" | "security" | "admin_bulk";
+type SettingsView = "main" | "account" | "security" | "admin_bulk" | "store";
 
 export default function SettingsPage() {
-    const { user, isLoading, updateUser, startSubscription, logout } = useAuth();
+    const { user, isLoading, updateUser, startSubscription, logout, claimDailyToken } = useAuth();
     const router = useRouter();
     const [view, setView] = useState<SettingsView>("main");
     const [isSubscribed, setIsSubscribed] = useState(false);
@@ -18,6 +18,9 @@ export default function SettingsPage() {
     const [email, setEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
+    // Store view states
+    const [isClaiming, setIsClaiming] = useState(false);
+    const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -32,6 +35,59 @@ export default function SettingsPage() {
             setEmail(user.email || "");
         }
     }, [user]);
+
+    // Store view helper functions
+    const canClaimToken = () => {
+        if (!user?.lastTokenClaim) return true;
+        const lastClaim = new Date(user.lastTokenClaim);
+        const now = new Date();
+        const hoursSince = (now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60);
+        return hoursSince >= 24;
+    };
+
+    const getTimeRemaining = () => {
+        if (!user?.lastTokenClaim) return null;
+        const lastClaim = new Date(user.lastTokenClaim);
+        const now = new Date();
+        const nextClaim = new Date(lastClaim.getTime() + 24 * 60 * 60 * 1000);
+        const diff = nextClaim.getTime() - now.getTime();
+
+        if (diff <= 0) return null;
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        return `${hours} saat ${minutes} dakika`;
+    };
+
+    // Update countdown every minute for store view
+    useEffect(() => {
+        if (view !== 'store') return;
+
+        const updateTimer = () => {
+            setTimeRemaining(getTimeRemaining());
+        };
+        updateTimer();
+        const interval = setInterval(updateTimer, 60000);
+        return () => clearInterval(interval);
+    }, [user?.lastTokenClaim, view]);
+
+    const handleClaimToken = async () => {
+        if (!user || !canClaimToken()) return;
+
+        setIsClaiming(true);
+        try {
+            const result = await claimDailyToken();
+            if (result.success) {
+                alert(`✅ ${result.message}\n\nMevcut bakiyeniz: ${result.tokens} jeton`);
+            } else {
+                alert(`❌ ${result.message}`);
+            }
+        } catch (error) {
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+        } finally {
+            setIsClaiming(false);
+        }
+    };
 
     if (isLoading || !user) {
         return null; // Or a loading spinner
@@ -202,6 +258,70 @@ export default function SettingsPage() {
         );
     }
 
+    if (view === "store") {
+        return (
+            <div className="pb-20">
+                <div className="p-4 border-b border-gray-200 sticky top-0 bg-white/80 backdrop-blur-md z-10 flex items-center gap-4">
+                    <button onClick={() => setView("main")} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <ArrowLeft size={20} />
+                    </button>
+                    <h1 className="text-xl font-bold">Mağaza</h1>
+                </div>
+                <div className="p-4 space-y-6">
+                    {/* Token Balance Card */}
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm opacity-90">Jeton Bakiyeniz</p>
+                                <p className="text-4xl font-bold mt-1">{user?.tokens || 0}</p>
+                            </div>
+                            <Store size={48} className="opacity-50" />
+                        </div>
+                    </div>
+
+                    {/* Daily Token Claim */}
+                    <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                        <h2 className="text-lg font-bold mb-2">Günlük Jeton</h2>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Her gün 1 ücretsiz jeton kazanın ve mağazada ürün satın alın!
+                        </p>
+
+                        {canClaimToken() ? (
+                            <button
+                                onClick={handleClaimToken}
+                                disabled={isClaiming}
+                                className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-3 rounded-full transition-colors"
+                            >
+                                {isClaiming ? 'Alınıyor...' : '🎁 Günlük Jetonunu Al'}
+                            </button>
+                        ) : (
+                            <div className="text-center">
+                                <button
+                                    disabled
+                                    className="w-full bg-gray-200 text-gray-500 font-bold py-3 rounded-full cursor-not-allowed"
+                                >
+                                    Zaten Aldınız
+                                </button>
+                                {timeRemaining && (
+                                    <p className="text-sm text-gray-500 mt-2">
+                                        ⏰ Bir sonraki jeton: {timeRemaining}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Coming Soon Products */}
+                    <div className="text-center py-8 border border-dashed border-gray-300 rounded-2xl">
+                        <Store className="mx-auto mb-3 text-gray-300" size={48} />
+                        <h3 className="font-bold text-gray-600 mb-1">Ürünler Yakında!</h3>
+                        <p className="text-sm text-gray-500">Jetonlarınızla satın alabileceğiniz ürünler çok yakında ekleniyor...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (view === "admin_bulk") {
         return (
             <div className="pb-20">
@@ -319,6 +439,16 @@ export default function SettingsPage() {
                             <div>
                                 <p className="font-medium">Güvenlik ve Erişim</p>
                                 <p className="text-sm text-gray-500">Güvenliğinizi yönetin</p>
+                            </div>
+                        </div>
+                        <ChevronRight className="text-gray-400 group-hover:text-gray-600" />
+                    </button>
+                    <button onClick={() => setView("store")} className="w-full flex items-center justify-between p-3 hover:bg-gray-100 rounded-xl transition-colors text-left group">
+                        <div className="flex items-center gap-4">
+                            <Store className="text-gray-500" />
+                            <div>
+                                <p className="font-medium">Mağaza</p>
+                                <p className="text-sm text-gray-500">Supplement satın al</p>
                             </div>
                         </div>
                         <ChevronRight className="text-gray-400 group-hover:text-gray-600" />

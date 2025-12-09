@@ -14,6 +14,8 @@ export interface User {
     followerIds?: string[];
     subscriptionEndDate?: string;
     hasUsedTrial?: boolean;
+    tokens?: number;
+    lastTokenClaim?: string;
 }
 
 export interface Comment {

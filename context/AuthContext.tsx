@@ -10,6 +10,7 @@ interface AuthContextType {
     logout: () => void;
     updateUser: (updates: Partial<User>) => void;
     startSubscription: () => void;
+    claimDailyToken: () => Promise<{ success: boolean; message: string; tokens?: number }>;
     isLoading: boolean;
 }
 
@@ -91,7 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 followers: data.user.followers || 0,
                 following: data.user.following || 0,
                 followingIds: [],
-                followerIds: []
+                followerIds: [],
+                tokens: data.user.tokens || 0,
+                lastTokenClaim: data.user.last_token_claim
             };
 
             setUser(normalizedUser);
@@ -127,7 +130,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 followers: 0,
                 following: 0,
                 followingIds: [],
-                followerIds: []
+                followerIds: [],
+                tokens: data.user.tokens || 0,
+                lastTokenClaim: data.user.last_token_claim
             };
 
             setUser(normalizedUser);
@@ -186,8 +191,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("supplabs_user", JSON.stringify(updatedUser));
     };
 
+    const claimDailyToken = async () => {
+        if (!user) return { success: false, message: 'Kullanıcı bulunamadı' };
+
+        try {
+            const response = await fetch('/api/tokens/claim', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Update user with new token balance
+                const updatedUser = {
+                    ...user,
+                    tokens: data.tokens,
+                    lastTokenClaim: data.lastTokenClaim
+                };
+                setUser(updatedUser);
+                localStorage.setItem("supplabs_user", JSON.stringify(updatedUser));
+                return { success: true, message: data.message, tokens: data.tokens };
+            } else {
+                return { success: false, message: data.error || 'Jeton alınamadı' };
+            }
+        } catch (error) {
+            console.error('Token claim error:', error);
+            return { success: false, message: 'Bir hata oluştu' };
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, updateUser, startSubscription, isLoading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, updateUser, startSubscription, claimDailyToken, isLoading }}>
             {children}
         </AuthContext.Provider>
     );
