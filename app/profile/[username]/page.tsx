@@ -229,14 +229,28 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
     };
 
     const getFilteredPosts = () => {
+        let basePosts: PostType[] = [];
+
         switch (activeTab) {
             case "posts":
-                return posts;
+                basePosts = posts;
+                break;
             case "likes":
-                return likedPosts;
+                basePosts = likedPosts;
+                break;
             default:
-                return [];
+                basePosts = [];
         }
+
+        // Filter out [SYSTEM_HIDDEN] posts if viewing someone else's profile (even admin's)
+        // Only show SYSTEM_HIDDEN posts to the admin when viewing their own profile
+        return basePosts.filter(post => {
+            if (post.content.includes('[SYSTEM_HIDDEN]')) {
+                // Only show to admin viewing their own profile
+                return isCurrentUser && (user?.username === 'SuppLabs Resmi' || user?.handle === '@supplabs');
+            }
+            return true;
+        });
     };
 
     const filteredPosts = getFilteredPosts();

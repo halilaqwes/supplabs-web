@@ -125,9 +125,17 @@ export function Feed() {
                     </div>
                 ) : (
                     <>
-                        {posts.map((post) => (
-                            <Post key={post.id} post={post} onUpdate={fetchInitialPosts} />
-                        ))}
+                        {posts
+                            .filter(post => {
+                                // Hide [SYSTEM_HIDDEN] posts from non-admin users
+                                if (post.content.includes('[SYSTEM_HIDDEN]')) {
+                                    return user?.username === 'SuppLabs Resmi' || user?.handle === '@supplabs';
+                                }
+                                return true;
+                            })
+                            .map((post) => (
+                                <Post key={post.id} post={post} onUpdate={fetchInitialPosts} />
+                            ))}
 
                         {/* Sentinel Element for IntersectionObserver */}
                         {hasMore && (
