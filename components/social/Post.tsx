@@ -32,6 +32,7 @@ export function Post({ post, onUpdate }: PostProps) {
             if (response.ok) {
                 const data = await response.json();
                 setComments(data.comments);
+                setCommentCount(data.comments.length); // Sync count with actual comments
             }
         } catch (error) {
             console.error("Failed to fetch comments", error);
@@ -253,18 +254,10 @@ export function Post({ post, onUpdate }: PostProps) {
                             <div className="p-2 rounded-full group-hover:bg-blue-50">
                                 <MessageCircle size={18} />
                             </div>
-                            <span className="text-sm">{commentCount > 0 && commentCount}</span>
+                            <span className="text-sm">{commentCount}</span>
                         </button>
 
-                        <button
-                            onClick={handleRepost}
-                            className="flex items-center gap-2 group hover:text-green-500 transition-colors"
-                        >
-                            <div className="p-2 rounded-full group-hover:bg-green-50">
-                                <Repeat size={18} />
-                            </div>
-                            <span className="text-sm">{repostCount > 0 && repostCount}</span>
-                        </button>
+                        {/* Repost button removed as requested */}
 
                         <button
                             onClick={handleLike}

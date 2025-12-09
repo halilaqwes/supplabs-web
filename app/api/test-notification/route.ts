@@ -90,10 +90,17 @@ export async function GET(request: NextRequest) {
             );
         }
 
+        const { data: notification, error: notifError } = await supabaseAdmin
+            .from('notifications')
+            .select('*')
+            .limit(1)
+            .single();
+
         return NextResponse.json({
             userId,
             deviceCount: tokens?.length || 0,
-            devices: tokens || []
+            devices: tokens || [],
+            notificationSchema: notification ? Object.keys(notification) : 'No notifications found'
         });
     } catch (error) {
         console.error('Error checking devices:', error);

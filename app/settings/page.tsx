@@ -7,7 +7,7 @@ import Link from "next/link";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 import { useRouter } from "next/navigation";
 
-type SettingsView = "main" | "account" | "security";
+type SettingsView = "main" | "account" | "security" | "admin_bulk";
 
 export default function SettingsPage() {
     const { user, isLoading, updateUser, startSubscription, logout } = useAuth();
@@ -202,6 +202,76 @@ export default function SettingsPage() {
         );
     }
 
+    if (view === "admin_bulk") {
+        return (
+            <div className="pb-20">
+                <div className="p-4 border-b border-gray-200 sticky top-0 bg-white/80 backdrop-blur-md z-10 flex items-center gap-4">
+                    <button onClick={() => setView("main")} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <ArrowLeft size={20} />
+                    </button>
+                    <h1 className="text-xl font-bold text-red-600">Toplu Bildirim Gönder</h1>
+                </div>
+                <div className="p-4">
+                    <p className="text-sm text-gray-500 mb-6 bg-red-50 p-4 rounded-xl border border-red-100">
+                        <strong>Lütfen Dikkat:</strong> Buradan göndereceğiniz mesaj, platformdaki <u>tüm kullanıcılara</u> bildirim olarak iletilecektir. Bu işlem geri alınamaz.
+                    </p>
+                    <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        const form = e.target as HTMLFormElement;
+                        const message = (form.elements.namedItem('message') as HTMLTextAreaElement).value;
+
+                        if (!message.trim()) return;
+                        if (!confirm('Bu bildirimi TÜM kullanıcılara göndermek istediğinizden emin misiniz?')) return;
+
+                        try {
+                            const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+                            btn.disabled = true;
+                            btn.textContent = 'Gönderiliyor...';
+
+                            const response = await fetch('/api/admin/bulk-notification', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ userId: user?.id, content: message })
+                            });
+
+                            const data = await response.json();
+
+                            if (response.ok) {
+                                alert(`Bildirim başarıyla ${data.sentCount} kullanıcıya gönderildi!`);
+                                form.reset();
+                                setView('main');
+                            } else {
+                                alert(data.error || 'Bir hata oluştu.');
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            alert('İşlem başarısız.');
+                        } finally {
+                            const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+                            if (btn) {
+                                btn.disabled = false;
+                                btn.textContent = 'Bildirimi Herkese Gönder';
+                            }
+                        }
+                    }} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Bildirim Mesajı</label>
+                            <textarea
+                                name="message"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none resize-none min-h-[120px]"
+                                placeholder="Tüm kullanıcılara gidecek bildirimi yazın..."
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="w-full bg-red-600 text-white font-bold py-3 rounded-full hover:bg-red-700 transition-colors">
+                            Bildirimi Herkese Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="pb-20">
             <div className="p-4 border-b border-gray-200 sticky top-0 bg-white/80 backdrop-blur-md z-10">
@@ -253,6 +323,34 @@ export default function SettingsPage() {
                         </div>
                         <ChevronRight className="text-gray-400 group-hover:text-gray-600" />
                     </button>
+
+                    {/* Admin Panel Link - Only for Admin */}
+                    {user && (user.handle === "@supplabs" || user.username === "SuppLabs Resmi") && (
+                        <div className="pt-4 border-t border-gray-100 mt-4">
+                            <h3 className="font-bold text-lg px-2 mb-2 text-red-500">Yönetici</h3>
+                            <Link href="/gizli-yonetici-paneli-x9z" className="w-full flex items-center justify-between p-3 hover:bg-red-50 rounded-xl transition-colors text-left group mb-1">
+                                <div className="flex items-center gap-4">
+                                    <Shield className="text-red-500" />
+                                    <div>
+                                        <p className="font-medium text-red-600">Yönetici Paneli</p>
+                                        <p className="text-sm text-red-400">Site istatistiklerini görüntüle</p>
+                                    </div>
+                                </div>
+                                <ChevronRight className="text-red-400 group-hover:text-red-600" />
+                            </Link>
+
+                            <button onClick={() => setView("admin_bulk")} className="w-full flex items-center justify-between p-3 hover:bg-red-50 rounded-xl transition-colors text-left group">
+                                <div className="flex items-center gap-4">
+                                    <Bell className="text-red-500" />
+                                    <div>
+                                        <p className="font-medium text-red-600">Toplu Bildirim</p>
+                                        <p className="text-sm text-red-400">Herkese bildirim gönder</p>
+                                    </div>
+                                </div>
+                                <ChevronRight className="text-red-400 group-hover:text-red-600" />
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <div className="space-y-1">

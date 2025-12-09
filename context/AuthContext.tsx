@@ -40,6 +40,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
     }, []);
 
+    // Heartbeat System: Update online status every 5 minutes
+    useEffect(() => {
+        if (!user) return;
+
+        const sendPing = async () => {
+            try {
+                await fetch('/api/auth/ping', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id })
+                });
+            } catch (error) {
+                // Silently fail for heartbeat
+                console.warn('Heartbeat failed', error);
+            }
+        };
+
+        // Initial ping on login/load
+        sendPing();
+
+        // Ping every 5 minutes
+        const intervalId = setInterval(sendPing, 5 * 60 * 1000);
+
+        return () => clearInterval(intervalId);
+    }, [user]);
+
     const login = async (userData: { email: string; password: string }) => {
         try {
             const response = await fetch('/api/auth/login', {

@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Bell, User, Settings, Dumbbell, LogOut, PlusSquare } from "lucide-react";
+import { Home, Search, Bell, User, Settings, Dumbbell, LogOut, PlusSquare, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
+import { useNotifications } from "@/context/NotificationContext";
 
 const NAV_ITEMS = [
     { label: "Anasayfa", href: "/feed", icon: Home },
+    { label: "Ara", href: "/search", icon: Search },
     { label: "Supplementler", href: "/supplements", icon: Dumbbell },
     { label: "Bildirimler", href: "/notifications", icon: Bell },
     { label: "Profil", href: "/profile", icon: User },
@@ -18,6 +20,11 @@ const NAV_ITEMS = [
 export function Sidebar() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
+    const { unreadCount } = useNotifications();
+
+    // Mobile Bottom Nav Items (Max 5)
+    // Anasayfa - Ara - Supplementler - Bildirimler - Profil
+    const MOBILE_NAV_LABELS = ["Anasayfa", "Ara", "Supplementler", "Bildirimler", "Profil"];
 
     return (
         <>
@@ -25,22 +32,24 @@ export function Sidebar() {
             <div className="hidden md:flex flex-col h-screen sticky top-0 px-4 py-6 border-r border-gray-200 w-[275px]">
                 <div className="mb-8 px-4">
                     <Link href="/feed">
-                        <img src="/logo-new.png" alt="SuppLabs Logo" className="w-12 h-12 object-contain" />
+                        <img src="/logo-icon.png" alt="SuppLabs Logo" className="w-12 h-12 object-contain" />
                     </Link>
                 </div>
 
                 <nav className="flex-1 space-y-2">
-                    {NAV_ITEMS.filter(item => {
+                    {NAV_ITEMS.map((item) => {
+                        // Desktop Specific: Hide "Ara" because it exists in top-right
+                        if (item.label === "Ara") return null;
+
                         // Hide Bildirimler and Ayarlar if user is not logged in
                         if (!user && (item.label === "Bildirimler" || item.label === "Ayarlar")) {
-                            return false;
+                            return null;
                         }
-                        return true;
-                    }).map((item) => {
+
                         const Icon = item.icon;
                         const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
-                        // Handle Profile link dynamically if user is logged in
+                        // Handle Profile link dynamically
                         const href = item.label === "Profil"
                             ? (user ? `/profile/${encodeURIComponent(user.username)}` : "/login")
                             : item.href;
@@ -50,17 +59,20 @@ export function Sidebar() {
                                 key={item.href}
                                 href={href}
                                 className={cn(
-                                    "flex items-center gap-4 px-4 py-3 text-xl rounded-full transition-colors hover:bg-gray-100",
+                                    "flex items-center gap-4 px-4 py-3 text-xl rounded-full transition-colors hover:bg-gray-100 relative",
                                     isActive ? "font-bold" : "font-medium"
                                 )}
                             >
+                                {item.label === "Bildirimler" && unreadCount > 0 && (
+                                    <span className="absolute left-7 top-2 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold text-white z-10 pointer-events-none">
+                                        {unreadCount > 99 ? '99+' : unreadCount}
+                                    </span>
+                                )}
                                 <Icon className={cn("w-7 h-7", isActive && "fill-current")} />
                                 <span>{item.label}</span>
                             </Link>
                         );
                     })}
-
-
 
                     {user && (
                         <button
@@ -94,68 +106,40 @@ export function Sidebar() {
             </div>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 flex justify-between items-center px-6 py-3 z-50 safe-area-bottom">
-                {/* Left Side Items */}
-                <div className="flex gap-8">
-                    {NAV_ITEMS.slice(0, 2).map((item) => {
-                        const Icon = item.icon;
-                        const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={cn(
-                                    "flex flex-col items-center gap-1",
-                                    isActive ? "text-blue-500" : "text-gray-400"
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-100 flex justify-between items-center px-4 py-3 z-50 safe-area-bottom">
+                {NAV_ITEMS.filter(item => MOBILE_NAV_LABELS.includes(item.label)).map((item) => {
+                    const Icon = item.icon;
+                    // Strict active check for home to avoid highlighting on sub-pages if not desired, or use startsWith
+                    const isActive = pathname === item.href;
+
+                    // Handle Profile link dynamically
+                    const href = item.label === "Profil"
+                        ? (user ? `/profile/${encodeURIComponent(user.username)}` : "/login")
+                        : item.href;
+
+                    // Hide Notifications if not logged in
+                    if (!user && item.label === "Bildirimler") return null;
+
+                    return (
+                        <Link
+                            key={item.href}
+                            href={href}
+                            className={cn(
+                                "flex flex-col items-center justify-center p-2 rounded-lg transition-colors",
+                                isActive ? "text-blue-500" : "text-gray-400 hover:text-gray-600"
+                            )}
+                        >
+                            <div className="relative">
+                                {item.label === "Bildirimler" && unreadCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border border-white flex items-center justify-center text-[9px] font-bold text-white z-10 pointer-events-none">
+                                        {unreadCount > 99 ? '99+' : unreadCount}
+                                    </span>
                                 )}
-                            >
-                                <Icon size={24} className={cn(isActive && "fill-current")} />
-                            </Link>
-                        );
-                    })}
-                </div>
-
-                {/* Center FAB */}
-                <div className="absolute left-1/2 -translate-x-1/2 -top-6">
-                    <button
-                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                        className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors active:scale-95"
-                    >
-                        <PlusSquare size={24} />
-                    </button>
-                </div>
-
-                {/* Right Side Items */}
-                <div className="flex gap-8">
-                    {NAV_ITEMS.slice(2).filter(item => {
-                        // Hide Bildirimler and Ayarlar if user is not logged in
-                        if (!user && (item.label === "Bildirimler" || item.label === "Ayarlar")) {
-                            return false;
-                        }
-                        return true;
-                    }).map((item) => {
-                        const Icon = item.icon;
-                        const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-
-                        // Handle Profile link dynamically
-                        const href = item.label === "Profil"
-                            ? (user ? `/profile/${encodeURIComponent(user.username)}` : "/login")
-                            : item.href;
-
-                        return (
-                            <Link
-                                key={item.href}
-                                href={href}
-                                className={cn(
-                                    "flex flex-col items-center gap-1",
-                                    isActive ? "text-blue-500" : "text-gray-500"
-                                )}
-                            >
-                                <Icon size={24} className={cn(isActive && "fill-current")} />
-                            </Link>
-                        );
-                    })}
-                </div>
+                                <Icon size={26} className={cn(isActive && "fill-current")} />
+                            </div>
+                        </Link>
+                    );
+                })}
             </div>
         </>
     );

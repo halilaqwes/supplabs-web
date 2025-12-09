@@ -1,21 +1,37 @@
 "use client";
 
 import { useStore } from "@/context/StoreContext";
-import { Heart, UserPlus, MessageCircle } from "lucide-react";
+import { Heart, UserPlus, MessageCircle, Megaphone } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import { useNotifications } from "@/context/NotificationContext";
+
 export default function NotificationsPage() {
     const { notifications, markNotificationsRead, posts } = useStore();
+    const { refreshUnreadCount } = useNotifications();
     const router = useRouter();
 
     useEffect(() => {
-        markNotificationsRead();
+        const syncReadStatus = async () => {
+            await markNotificationsRead();
+            await refreshUnreadCount();
+        };
+        syncReadStatus();
     }, []);
 
-    const getIcon = (type: string) => {
-        switch (type) {
+    // Helper to check if a notification is a system announcement
+    const isSystemAnnouncement = (notification: any) => {
+        return notification.post?.content?.includes('[SYSTEM_HIDDEN]');
+    };
+
+    const getIcon = (notification: any) => {
+        if (isSystemAnnouncement(notification)) {
+            return <Megaphone className="text-red-500" size={20} />;
+        }
+
+        switch (notification.type) {
             case "like": return <Heart className="fill-red-500 text-red-500" size={20} />;
             case "follow": return <UserPlus className="text-blue-500" size={20} />;
             case "reply": return <MessageCircle className="text-green-500" size={20} />;
@@ -23,8 +39,12 @@ export default function NotificationsPage() {
         }
     };
 
-    const getMessage = (type: string) => {
-        switch (type) {
+    const getMessage = (notification: any) => {
+        if (isSystemAnnouncement(notification)) {
+            return "önemli bir duyuru yayınladı";
+        }
+
+        switch (notification.type) {
             case "like": return "gönderini beğendi";
             case "follow": return "seni takip etti";
             case "reply": return "gönderine yanıt verdi";
@@ -33,6 +53,11 @@ export default function NotificationsPage() {
     };
 
     const handleNotificationClick = (notification: any) => {
+        if (isSystemAnnouncement(notification)) {
+            // Sistem bildirimleri için yönlendirme yapma (zaten içerik görünüyor)
+            return;
+        }
+
         if (notification.postId) {
             // Post varsa post sayfasına git
             const post = posts.find(p => p.id === notification.postId);
@@ -60,7 +85,7 @@ export default function NotificationsPage() {
                             className={`p-4 flex gap-4 hover:bg-gray-50 transition-colors cursor-pointer ${!notification.read ? "bg-blue-50/50" : ""}`}
                         >
                             <div className="mt-1">
-                                {getIcon(notification.type)}
+                                {getIcon(notification)}
                             </div>
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
@@ -69,13 +94,13 @@ export default function NotificationsPage() {
                                         <span className="font-bold">
                                             {notification.fromUser.username}
                                         </span>{" "}
-                                        {getMessage(notification.type)}
+                                        {getMessage(notification)}
                                     </p>
                                 </div>
 
                                 {notification.post?.content && (
                                     <p className="text-sm text-gray-600 mt-2 line-clamp-2">
-                                        "{notification.post?.content}"
+                                        "{notification.post.content.replace('[SYSTEM_HIDDEN] ', '')}"
                                     </p>
                                 )}
 

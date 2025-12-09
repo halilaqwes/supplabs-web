@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Post } from "@/components/social/Post";
 import { ArrowLeft, Search } from "lucide-react";
 import Link from "next/link";
@@ -12,15 +12,25 @@ import { Suspense } from "react";
 
 function SearchContent() {
     const searchParams = useSearchParams();
-    const query = searchParams.get("q") || "";
+    const router = require("next/navigation").useRouter(); // using require inside to ensure client side execution context usually but here import is fine? usePathname is imported. Let's stick to adding useRouter to imports. Actually let's just use window location or standard component state for input.
+    // Better: Add useRouter to top imports.
+
+    const initialQuery = searchParams.get("q") || "";
+    const [searchTerm, setSearchTerm] = useState(initialQuery);
+
+    // Sync local state with URL param
+    useEffect(() => {
+        setSearchTerm(initialQuery);
+    }, [initialQuery]);
 
     const [posts, setPosts] = useState<PostType[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
+    // Perform search when initialQuery changes (URL changes)
     useEffect(() => {
         const fetchResults = async () => {
-            if (!query.trim()) {
+            if (!initialQuery.trim()) {
                 setPosts([]);
                 setUsers([]);
                 return;
@@ -28,7 +38,7 @@ function SearchContent() {
 
             setIsLoading(true);
             try {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                const response = await fetch(`/api/search?q=${encodeURIComponent(initialQuery)}`);
                 if (response.ok) {
                     const data = await response.json();
                     setPosts(data.posts || []);
@@ -41,20 +51,37 @@ function SearchContent() {
             }
         };
 
-        const timeoutId = setTimeout(fetchResults, 300); // Debounce
-        return () => clearTimeout(timeoutId);
-    }, [query]);
+        fetchResults();
+    }, [initialQuery]);
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchTerm.trim()) {
+            router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+        }
+    };
 
     return (
         <div className="pb-20">
-            <div className="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-gray-200 px-4 py-4 flex items-center gap-4">
-                <Link href="/feed" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <ArrowLeft size={20} />
-                </Link>
-                <div>
-                    <h1 className="text-xl font-bold">Arama Sonuçları</h1>
-                    <p className="text-gray-500 text-sm">"{query}" için sonuçlar</p>
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md z-10 border-b border-gray-200 px-4 py-4 flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                    <Link href="/feed" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <ArrowLeft size={24} />
+                    </Link>
+                    <h1 className="text-xl font-bold">Arama</h1>
                 </div>
+
+                <form onSubmit={handleSearch} className="relative">
+                    <input
+                        type="text"
+                        placeholder="Kullanıcı veya gönderi ara..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full bg-gray-100 border-none rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 transition-all font-medium"
+                        autoFocus
+                    />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                </form>
             </div>
 
             <div className="p-4">
@@ -85,7 +112,8 @@ function SearchContent() {
                         )}
 
                         <div>
-                            <h2 className="font-bold text-lg mb-4">Gönderiler</h2>
+                            {initialQuery && <h2 className="font-bold text-lg mb-4">Gönderiler</h2>}
+
                             {posts.length > 0 ? (
                                 <div className="border rounded-xl overflow-hidden">
                                     {posts.map(post => (
@@ -94,7 +122,14 @@ function SearchContent() {
                                 </div>
                             ) : (
                                 <div className="text-center py-8 text-gray-500">
-                                    {users.length === 0 && <p>Sonuç bulunamadı.</p>}
+                                    {initialQuery ? (
+                                        users.length === 0 && <p>Sonuç bulunamadı.</p>
+                                    ) : (
+                                        <div className="flex flex-col items-center gap-4 opacity-50">
+                                            <Search size={48} />
+                                            <p>Arama yapmak için yukarıya bir şeyler yazın.</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

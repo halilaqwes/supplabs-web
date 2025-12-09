@@ -11,7 +11,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-type Tab = "posts" | "replies" | "media" | "likes";
+type Tab = "posts" | "likes";
 
 interface FollowUser {
     id: string;
@@ -232,10 +232,6 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
         switch (activeTab) {
             case "posts":
                 return posts;
-            case "replies":
-                return [];
-            case "media":
-                return posts.filter(p => p.image || p.video);
             case "likes":
                 return likedPosts;
             default:
@@ -368,9 +364,10 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                 </div>
             </div>
 
+            {/* Removed 'replies' and 'media' tabs as requested */}
             <div className="mt-4 border-b border-gray-200">
                 <div className="flex">
-                    {["posts", "replies", "media", "likes"].map((tab) => (
+                    {["posts", "likes"].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab as Tab)}
@@ -378,8 +375,6 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                         >
                             <span className={cn(activeTab === tab && "font-bold text-black")}>
                                 {tab === "posts" && "Gönderiler"}
-                                {tab === "replies" && "Yanıtlar"}
-                                {tab === "media" && "Medya"}
                                 {tab === "likes" && "Beğeniler"}
                             </span>
                             {activeTab === tab && (
@@ -398,8 +393,6 @@ export default function ProfilePage({ params }: { params: Promise<{ username: st
                 ) : (
                     <div className="p-8 text-center text-gray-500">
                         {activeTab === "posts" && "Henüz gönderi yok."}
-                        {activeTab === "replies" && "Henüz yanıt yok."}
-                        {activeTab === "media" && "Henüz medya yok."}
                         {activeTab === "likes" && "Henüz beğenilen gönderi yok."}
                     </div>
                 )}

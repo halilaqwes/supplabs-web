@@ -22,9 +22,11 @@ export async function GET(request: NextRequest) {
           is_official,
           role
         ),
-        likes:likes(user_id)
+        likes:likes(user_id),
+        comments:comments(count)
       `)
             .order('created_at', { ascending: false })
+            .not('content', 'ilike', '[SYSTEM_HIDDEN]%')
             .range(offset, offset + limit - 1);
 
         // If we have a userId, we want to check if THEY liked it. 
@@ -78,9 +80,9 @@ export async function GET(request: NextRequest) {
                 content: post.content,
                 image: post.image,
                 video: post.video,
-                likes: post.likes_count,
+                likes: post.likes_count, // Fallback if exists, but we rely on formatted client side logic mostly
                 reposts: post.reposts_count,
-                comments: post.comments_count,
+                comments: post.comments?.[0]?.count || 0,
                 timestamp: getTimeAgo(post.created_at),
                 isLiked: userId ? post.likes?.some((l: any) => l.user_id === userId) : false,
                 likedBy: [],
