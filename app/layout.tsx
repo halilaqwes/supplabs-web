@@ -42,6 +42,9 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "Xssr0bT9DnkeBROYNPGHxCCgOpal7Q64yaEMkIwwg2Q",
+    other: {
+      'admaven-placement': 'BqjwGpdsE',
+    },
   },
   alternates: {
     canonical: '/',
