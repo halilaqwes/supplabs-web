@@ -336,14 +336,41 @@ export default function SettingsPage() {
                     <h1 className="text-xl font-bold">Mağaza</h1>
                 </div>
                 <div className="p-4 space-y-6">
-                    {/* Token Balance Card */}
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm opacity-90">Jeton Bakiyeniz</p>
-                                <p className="text-4xl font-bold mt-1">{user?.tokens || 0}</p>
+                    {/* Token Balance Card - Premium */}
+                    <div className="relative overflow-hidden">
+                        {/* Animated gradient background */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient-x"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent"></div>
+
+                        <div className="relative rounded-3xl p-6 backdrop-blur-sm">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-2">
+                                    <p className="text-sm font-medium text-white/90 tracking-wide">Jeton Bakiyeniz</p>
+                                    <div className="flex items-baseline gap-2">
+                                        <p className="text-5xl font-black text-white drop-shadow-lg">
+                                            {(user?.tokens || 0).toLocaleString()}
+                                        </p>
+                                        <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full backdrop-blur-md">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-300 animate-pulse"></div>
+                                            <span className="text-xs font-bold text-white">JETON</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="relative">
+                                    {/* Glow effect */}
+                                    <div className="absolute inset-0 bg-yellow-400 rounded-full blur-xl opacity-40 animate-pulse"></div>
+                                    <div className="relative bg-white/20 p-4 rounded-2xl backdrop-blur-md">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                            className="w-10 h-10 text-yellow-300 drop-shadow-lg animate-pulse"
+                                        >
+                                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
-                            <Store size={48} className="opacity-50" />
                         </div>
                     </div>
 
@@ -436,10 +463,10 @@ export default function SettingsPage() {
                                                         onClick={() => handlePurchase(product.id, product.name, product.price)}
                                                         disabled={purchasingProductId === product.id || (user?.tokens || 0) < product.price}
                                                         className={`px-6 py-2.5 rounded-full font-bold transition-all duration-300 transform hover:scale-105 shadow-md ${purchasingProductId === product.id
-                                                                ? 'bg-gray-300 text-gray-500'
-                                                                : (user?.tokens || 0) < product.price
-                                                                    ? 'bg-gray-200 text-gray-400'
-                                                                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white'
+                                                            ? 'bg-gray-300 text-gray-500'
+                                                            : (user?.tokens || 0) < product.price
+                                                                ? 'bg-gray-200 text-gray-400'
+                                                                : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white'
                                                             }`}
                                                     >
                                                         {purchasingProductId === product.id ? 'Alınıyor...' : 'Satın Al'}
