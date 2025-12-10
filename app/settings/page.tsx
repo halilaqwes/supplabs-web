@@ -390,37 +390,61 @@ export default function SettingsPage() {
                         ) : storeProducts.length > 0 ? (
                             <div className="space-y-4">
                                 {storeProducts.map((product) => (
-                                    <div key={product.id} className="bg-white border border-gray-200 rounded-2xl p-4 flex gap-4">
-                                        {/* Product Image */}
-                                        <img
-                                            src={product.image_url}
-                                            alt={product.name}
-                                            className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
-                                        />
+                                    <div
+                                        key={product.id}
+                                        className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+                                    >
+                                        {/* Premium Badge */}
+                                        <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+                                            Premium
+                                        </div>
 
-                                        {/* Product Info */}
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="font-bold text-lg mb-1">{product.name}</h3>
-                                            {product.description && (
-                                                <p className="text-sm text-gray-600 mb-2">{product.description}</p>
-                                            )}
-                                            <div className="flex items-center justify-between gap-2">
-                                                <div>
-                                                    <p className="text-xl font-bold text-blue-600">{product.price.toLocaleString()} Jeton</p>
-                                                    <p className="text-xs text-gray-500">Stok: {product.stock} adet</p>
+                                        <div className="p-5 flex gap-4">
+                                            {/* Product Image - Smaller */}
+                                            <div className="flex-shrink-0">
+                                                <img
+                                                    src={product.image_url}
+                                                    alt={product.name}
+                                                    className="w-20 h-20 object-contain rounded-xl bg-white p-2 shadow-sm"
+                                                />
+                                            </div>
+
+                                            {/* Product Info */}
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-bold text-lg mb-1 text-gray-900">{product.name}</h3>
+                                                {product.description && (
+                                                    <p className="text-sm text-gray-500 mb-3">{product.description}</p>
+                                                )}
+
+                                                <div className="flex items-center justify-between gap-3 mt-3">
+                                                    <div className="space-y-1">
+                                                        <div className="flex items-baseline gap-2">
+                                                            <span className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                                                {product.price.toLocaleString()}
+                                                            </span>
+                                                            <span className="text-sm font-semibold text-gray-500">Jeton</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <div className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
+                                                            <span className="text-xs font-medium text-gray-600">
+                                                                {product.stock > 0 ? `${product.stock} adet` : 'Stokta yok'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <button
+                                                        onClick={() => handlePurchase(product.id, product.name, product.price)}
+                                                        disabled={purchasingProductId === product.id || (user?.tokens || 0) < product.price}
+                                                        className={`px-6 py-2.5 rounded-full font-bold transition-all duration-300 transform hover:scale-105 shadow-md ${purchasingProductId === product.id
+                                                                ? 'bg-gray-300 text-gray-500'
+                                                                : (user?.tokens || 0) < product.price
+                                                                    ? 'bg-gray-200 text-gray-400'
+                                                                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white'
+                                                            }`}
+                                                    >
+                                                        {purchasingProductId === product.id ? 'Alınıyor...' : 'Satın Al'}
+                                                    </button>
                                                 </div>
-                                                <button
-                                                    onClick={() => handlePurchase(product.id, product.name, product.price)}
-                                                    disabled={purchasingProductId === product.id || (user?.tokens || 0) < product.price}
-                                                    className={`px-6 py-2 rounded-full font-bold transition-colors ${purchasingProductId === product.id
-                                                            ? 'bg-gray-300 text-gray-500 cursor-wait'
-                                                            : (user?.tokens || 0) < product.price
-                                                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                                                : 'bg-green-500 hover:bg-green-600 text-white'
-                                                        }`}
-                                                >
-                                                    {purchasingProductId === product.id ? 'Alınıyor...' : 'Satın Al'}
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
