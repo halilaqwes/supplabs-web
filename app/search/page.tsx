@@ -7,12 +7,14 @@ import Link from "next/link";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 import { useEffect, useState } from "react";
 import { Post as PostType, User } from "@/types";
+import { useAuth } from "@/context/AuthContext";
 
 import { Suspense } from "react";
 
 function SearchContent() {
     const searchParams = useSearchParams();
-    const router = require("next/navigation").useRouter(); // using require inside to ensure client side execution context usually but here import is fine? usePathname is imported. Let's stick to adding useRouter to imports. Actually let's just use window location or standard component state for input.
+    const router = require("next/navigation").useRouter();
+    const { user } = useAuth(); // using require inside to ensure client side execution context usually but here import is fine? usePathname is imported. Let's stick to adding useRouter to imports. Actually let's just use window location or standard component state for input.
     // Better: Add useRouter to top imports.
 
     const initialQuery = searchParams.get("q") || "";
@@ -116,9 +118,17 @@ function SearchContent() {
 
                             {posts.length > 0 ? (
                                 <div className="border rounded-xl overflow-hidden">
-                                    {posts.map(post => (
-                                        <Post key={post.id} post={post} />
-                                    ))}
+                                    {posts
+                                        .filter(post => {
+                                            // Hide [SYSTEM_HIDDEN] posts from non-admin users
+                                            if (post.content.includes('[SYSTEM_HIDDEN]')) {
+                                                return user?.username === 'SuppLabs Resmi' || user?.handle === '@supplabs';
+                                            }
+                                            return true;
+                                        })
+                                        .map(post => (
+                                            <Post key={post.id} post={post} />
+                                        ))}
                                 </div>
                             ) : (
                                 <div className="text-center py-8 text-gray-500">
