@@ -21,6 +21,9 @@ export default function SettingsPage() {
     // Store view states
     const [isClaiming, setIsClaiming] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
+    const [storeProducts, setStoreProducts] = useState<any[]>([]);
+    const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+    const [purchasingProductId, setPurchasingProductId] = useState<string | null>(null);
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -86,6 +89,71 @@ export default function SettingsPage() {
             alert('Bir hata oluştu. Lütfen tekrar deneyin.');
         } finally {
             setIsClaiming(false);
+        }
+    };
+
+    // Fetch store products when store view is opened
+    useEffect(() => {
+        const fetchProducts = async () => {
+            if (view !== 'store') return;
+
+            setIsLoadingProducts(true);
+            try {
+                const response = await fetch('/api/store/products');
+                if (response.ok) {
+                    const data = await response.json();
+                    setStoreProducts(data.products || []);
+                }
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            } finally {
+                setIsLoadingProducts(false);
+            }
+        };
+
+        fetchProducts();
+    }, [view]);
+
+    const handlePurchase = async (productId: string, productName: string, price: number) => {
+        if (!user) return;
+
+        if ((user.tokens || 0) < price) {
+            alert(`Yetersiz jeton! Bu ürün için ${price} jetona ihtiyacınız var.`);
+            return;
+        }
+
+        if (!confirm(`${productName} ürününü ${price} jetona satın almak istediğinize emin misiniz?`)) {
+            return;
+        }
+
+        setPurchasingProductId(productId);
+        try {
+            const response = await fetch('/api/store/purchase', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id, productId })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(`\u2705 ${data.message}\n\nYeni bakiyeniz: ${data.newTokenBalance} jeton`);
+                // Update user tokens in context
+                updateUser({ tokens: data.newTokenBalance });
+                // Refresh products list to update stock
+                const refreshResponse = await fetch('/api/store/products');
+                if (refreshResponse.ok) {
+                    const refreshData = await refreshResponse.json();
+                    setStoreProducts(refreshData.products || []);
+                }
+            } else {
+                alert(`\u274c ${data.error || 'Satın alma başarısız'}`);
+            }
+        } catch (error) {
+            console.error('Purchase error:', error);
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+        } finally {
+            setPurchasingProductId(null);
         }
     };
 
@@ -311,11 +379,60 @@ export default function SettingsPage() {
                         )}
                     </div>
 
-                    {/* Coming Soon Products */}
-                    <div className="text-center py-8 border border-dashed border-gray-300 rounded-2xl">
-                        <Store className="mx-auto mb-3 text-gray-300" size={48} />
-                        <h3 className="font-bold text-gray-600 mb-1">Ürünler Yakında!</h3>
-                        <p className="text-sm text-gray-500">Jetonlarınızla satın alabileceğiniz ürünler çok yakında ekleniyor...</p>
+                    {/* Store Products */}
+                    <div>
+                        <h2 className="text-lg font-bold mb-4">Ürünler</h2>
+
+                        {isLoadingProducts ? (
+                            <div className="flex justify-center py-8">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                            </div>
+                        ) : storeProducts.length > 0 ? (
+                            <div className="space-y-4">
+                                {storeProducts.map((product) => (
+                                    <div key={product.id} className="bg-white border border-gray-200 rounded-2xl p-4 flex gap-4">
+                                        {/* Product Image */}
+                                        <img
+                                            src={product.image_url}
+                                            alt={product.name}
+                                            className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                                        />
+
+                                        {/* Product Info */}
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-bold text-lg mb-1">{product.name}</h3>
+                                            {product.description && (
+                                                <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+                                            )}
+                                            <div className="flex items-center justify-between gap-2">
+                                                <div>
+                                                    <p className="text-xl font-bold text-blue-600">{product.price.toLocaleString()} Jeton</p>
+                                                    <p className="text-xs text-gray-500">Stok: {product.stock} adet</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => handlePurchase(product.id, product.name, product.price)}
+                                                    disabled={purchasingProductId === product.id || (user?.tokens || 0) < product.price}
+                                                    className={`px-6 py-2 rounded-full font-bold transition-colors ${purchasingProductId === product.id
+                                                            ? 'bg-gray-300 text-gray-500 cursor-wait'
+                                                            : (user?.tokens || 0) < product.price
+                                                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                                                : 'bg-green-500 hover:bg-green-600 text-white'
+                                                        }`}
+                                                >
+                                                    {purchasingProductId === product.id ? 'Alınıyor...' : 'Satın Al'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 border border-dashed border-gray-300 rounded-2xl">
+                                <Store className="mx-auto mb-3 text-gray-300" size={48} />
+                                <h3 className="font-bold text-gray-600 mb-1">Ürün Stokta Yok</h3>
+                                <p className="text-sm text-gray-500">Şu anda satın alınabilir ürün bulunmuyor.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
