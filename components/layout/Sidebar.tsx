@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Bell, User, Settings, Dumbbell, LogOut, PlusSquare, BookOpen } from "lucide-react";
+import { Home, Search, Bell, User, Settings, Dumbbell, LogOut, PlusSquare, BookOpen, Gift } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
@@ -11,6 +11,7 @@ import { useNotifications } from "@/context/NotificationContext";
 const NAV_ITEMS = [
     { label: "Anasayfa", href: "/feed", icon: Home },
     { label: "Ara", href: "/search", icon: Search },
+    { label: "Ödüller", href: "/rewards", icon: Gift },
     { label: "Supplementler", href: "/supplements", icon: Dumbbell },
     { label: "Bildirimler", href: "/notifications", icon: Bell },
     { label: "Profil", href: "/profile", icon: User },
@@ -23,8 +24,8 @@ export function Sidebar() {
     const { unreadCount } = useNotifications();
 
     // Mobile Bottom Nav Items (Max 5)
-    // Anasayfa - Ara - Supplementler - Bildirimler - Profil
-    const MOBILE_NAV_LABELS = ["Anasayfa", "Ara", "Supplementler", "Bildirimler", "Profil"];
+    // Anasayfa - Ödüller - Supplementler - Bildirimler - Profil
+    const MOBILE_NAV_LABELS = ["Anasayfa", "Ödüller", "Supplementler", "Bildirimler", "Profil"];
 
     return (
         <>
