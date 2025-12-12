@@ -478,7 +478,7 @@ export default function SettingsPage() {
                         )}
                     </div>
 
-                    {/* Video Ad Rewards */}
+                    {/* REMOVED: Video Ad Rewards 
                     <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-6 border border-purple-100">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-bold">Reklam İzle & Kazan</h2>
@@ -494,110 +494,110 @@ export default function SettingsPage() {
                         </p>
 
                         {/* Progress Bar */}
-                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
-                            <div
-                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500"
-                                style={{ width: `${(availableAds.watched / 3) * 100}%` }}
-                            ></div>
-                        </div>
-
-                        {availableAds.canWatch ? (
-                            <button
-                                onClick={handleWatchAd}
-                                disabled={isWatchingAd}
-                                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
-                            >
-                                {isWatchingAd ? '🎬 Reklam açılıyor...' : `🎬 Reklam İzle (${availableAds.remaining} Kaldı)`}
-                            </button>
-                        ) : (
-                            <div className="bg-white rounded-2xl p-4 border border-gray-200 text-center">
-                                <p className="text-gray-500 font-medium">⏰ Günlük limit doldu</p>
-                                <p className="text-xs text-gray-400 mt-1">Yarın tekrar gelin!</p>
-                            </div>
-                        )}
+                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
+                        <div
+                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500"
+                            style={{ width: `${(availableAds.watched / 3) * 100}%` }}
+                        ></div>
                     </div>
 
-                    {/* Store Products */}
-                    <div>
-                        <h2 className="text-lg font-bold mb-4">Ürünler</h2>
+                    {availableAds.canWatch ? (
+                        <button
+                            onClick={handleWatchAd}
+                            disabled={isWatchingAd}
+                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        >
+                            {isWatchingAd ? '🎬 Reklam açılıyor...' : `🎬 Reklam İzle (${availableAds.remaining} Kaldı)`}
+                        </button>
+                    ) : (
+                        <div className="bg-white rounded-2xl p-4 border border-gray-200 text-center">
+                            <p className="text-gray-500 font-medium">⏰ Günlük limit doldu</p>
+                            <p className="text-xs text-gray-400 mt-1">Yarın tekrar gelin!</p>
+                        </div>
+                    )}
+                </div> */}
 
-                        {isLoadingProducts ? (
-                            <div className="flex justify-center py-8">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                            </div>
-                        ) : storeProducts.length > 0 ? (
-                            <div className="space-y-4">
-                                {storeProducts.map((product) => (
-                                    <div
-                                        key={product.id}
-                                        className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-                                    >
-                                        {/* Premium Badge */}
-                                        <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-                                            Premium
+                {/* Store Products */}
+                <div>
+                    <h2 className="text-lg font-bold mb-4">Ürünler</h2>
+
+                    {isLoadingProducts ? (
+                        <div className="flex justify-center py-8">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        </div>
+                    ) : storeProducts.length > 0 ? (
+                        <div className="space-y-4">
+                            {storeProducts.map((product) => (
+                                <div
+                                    key={product.id}
+                                    className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+                                >
+                                    {/* Premium Badge */}
+                                    <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+                                        Premium
+                                    </div>
+
+                                    <div className="p-5 flex gap-4">
+                                        {/* Product Image - Smaller */}
+                                        <div className="flex-shrink-0">
+                                            <img
+                                                src={product.image_url}
+                                                alt={product.name}
+                                                className="w-20 h-20 object-contain rounded-xl bg-white p-2 shadow-sm"
+                                            />
                                         </div>
 
-                                        <div className="p-5 flex gap-4">
-                                            {/* Product Image - Smaller */}
-                                            <div className="flex-shrink-0">
-                                                <img
-                                                    src={product.image_url}
-                                                    alt={product.name}
-                                                    className="w-20 h-20 object-contain rounded-xl bg-white p-2 shadow-sm"
-                                                />
-                                            </div>
+                                        {/* Product Info */}
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-bold text-lg mb-1 text-gray-900">{product.name}</h3>
+                                            {product.description && (
+                                                <p className="text-sm text-gray-500 mb-3">{product.description}</p>
+                                            )}
 
-                                            {/* Product Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-bold text-lg mb-1 text-gray-900">{product.name}</h3>
-                                                {product.description && (
-                                                    <p className="text-sm text-gray-500 mb-3">{product.description}</p>
-                                                )}
-
-                                                <div className="flex items-center justify-between gap-3 mt-3">
-                                                    <div className="space-y-1">
-                                                        <div className="flex items-baseline gap-2">
-                                                            <span className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                                                {product.price.toLocaleString()}
-                                                            </span>
-                                                            <span className="text-sm font-semibold text-gray-500">Jeton</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1.5">
-                                                            <div className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
-                                                            <span className="text-xs font-medium text-gray-600">
-                                                                {product.stock > 0 ? `${product.stock} adet` : 'Stokta yok'}
-                                                            </span>
-                                                        </div>
+                                            <div className="flex items-center justify-between gap-3 mt-3">
+                                                <div className="space-y-1">
+                                                    <div className="flex items-baseline gap-2">
+                                                        <span className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                                            {product.price.toLocaleString()}
+                                                        </span>
+                                                        <span className="text-sm font-semibold text-gray-500">Jeton</span>
                                                     </div>
-
-                                                    <button
-                                                        onClick={() => handlePurchase(product.id, product.name, product.price)}
-                                                        disabled={purchasingProductId === product.id || (user?.tokens || 0) < product.price}
-                                                        className={`px-6 py-2.5 rounded-full font-bold transition-all duration-300 transform hover:scale-105 shadow-md ${purchasingProductId === product.id
-                                                            ? 'bg-gray-300 text-gray-500'
-                                                            : (user?.tokens || 0) < product.price
-                                                                ? 'bg-gray-200 text-gray-400'
-                                                                : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white'
-                                                            }`}
-                                                    >
-                                                        {purchasingProductId === product.id ? 'Alınıyor...' : 'Satın Al'}
-                                                    </button>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <div className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
+                                                        <span className="text-xs font-medium text-gray-600">
+                                                            {product.stock > 0 ? `${product.stock} adet` : 'Stokta yok'}
+                                                        </span>
+                                                    </div>
                                                 </div>
+
+                                                <button
+                                                    onClick={() => handlePurchase(product.id, product.name, product.price)}
+                                                    disabled={purchasingProductId === product.id || (user?.tokens || 0) < product.price}
+                                                    className={`px-6 py-2.5 rounded-full font-bold transition-all duration-300 transform hover:scale-105 shadow-md ${purchasingProductId === product.id
+                                                        ? 'bg-gray-300 text-gray-500'
+                                                        : (user?.tokens || 0) < product.price
+                                                            ? 'bg-gray-200 text-gray-400'
+                                                            : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white'
+                                                        }`}
+                                                >
+                                                    {purchasingProductId === product.id ? 'Alınıyor...' : 'Satın Al'}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center py-8 border border-dashed border-gray-300 rounded-2xl">
-                                <Store className="mx-auto mb-3 text-gray-300" size={48} />
-                                <h3 className="font-bold text-gray-600 mb-1">Ürün Stokta Yok</h3>
-                                <p className="text-sm text-gray-500">Şu anda satın alınabilir ürün bulunmuyor.</p>
-                            </div>
-                        )}
-                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 border border-dashed border-gray-300 rounded-2xl">
+                            <Store className="mx-auto mb-3 text-gray-300" size={48} />
+                            <h3 className="font-bold text-gray-600 mb-1">Ürün Stokta Yok</h3>
+                            <p className="text-sm text-gray-500">Şu anda satın alınabilir ürün bulunmuyor.</p>
+                        </div>
+                    )}
                 </div>
             </div>
+            </div >
         );
     }
 
