@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import bcrypt from 'bcryptjs';
 
+// CORS headers for all responses
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 export async function POST(request: NextRequest) {
     try {
         const { email, password } = await request.json();
@@ -10,7 +17,7 @@ export async function POST(request: NextRequest) {
         if (!email || !password) {
             return NextResponse.json(
                 { error: 'E-posta/Kullanıcı adı ve şifre gereklidir' },
-                { status: 400 }
+                { status: 400, headers: corsHeaders }
             );
         }
 
@@ -24,7 +31,7 @@ export async function POST(request: NextRequest) {
         if (error || !user) {
             return NextResponse.json(
                 { error: 'Geçersiz kullanıcı adı/e-posta veya şifre' },
-                { status: 401 }
+                { status: 401, headers: corsHeaders }
             );
         }
 
@@ -34,7 +41,7 @@ export async function POST(request: NextRequest) {
         if (!isValidPassword) {
             return NextResponse.json(
                 { error: 'Geçersiz kullanıcı adı/e-posta veya şifre' },
-                { status: 401 }
+                { status: 401, headers: corsHeaders }
             );
         }
 
@@ -59,13 +66,21 @@ export async function POST(request: NextRequest) {
                 user: mappedUser,
                 message: 'Giriş başarılı!'
             },
-            { status: 200 }
+            { status: 200, headers: corsHeaders }
         );
     } catch (error) {
         console.error('Login error:', error);
         return NextResponse.json(
             { error: 'Sunucu hatası' },
-            { status: 500 }
+            { status: 500, headers: corsHeaders }
         );
     }
+}
+
+// Handle OPTIONS preflight requests
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 200,
+        headers: corsHeaders
+    });
 }
