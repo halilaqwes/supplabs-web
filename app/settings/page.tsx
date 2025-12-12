@@ -24,6 +24,8 @@ export default function SettingsPage() {
     const [storeProducts, setStoreProducts] = useState<any[]>([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
     const [purchasingProductId, setPurchasingProductId] = useState<string | null>(null);
+    const [availableAds, setAvailableAds] = useState({ watched: 0, remaining: 3, canWatch: true });
+    const [isWatchingAd, setIsWatchingAd] = useState(false);
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -113,6 +115,76 @@ export default function SettingsPage() {
 
         fetchProducts();
     }, [view]);
+
+    // Fetch available ads
+    useEffect(() => {
+        const fetchAvailableAds = async () => {
+            if (!user || view !== 'store') return;
+
+            try {
+                const response = await fetch(`/api/ads/available?userId=${user.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setAvailableAds(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch available ads:', error);
+            }
+        };
+
+        fetchAvailableAds();
+    }, [user, view]);
+
+    const handleWatchAd = async () => {
+        if (!user || isWatchingAd) return;
+
+        setIsWatchingAd(true);
+
+        // Load Admaven Pop ad
+        const script = document.createElement('script');
+        script.src = `//dcbbwymp1bhlf.cloudfront.net/?wbbcd=${process.env.NEXT_PUBLIC_ADMAVEN_POP_ZONE_ID || 'PENDING_POP_ZONE_ID'}`;
+        script.async = true;
+        script.setAttribute('data-cfasync', 'false');
+
+        document.body.appendChild(script);
+
+        // Wait 10 seconds then claim reward
+        setTimeout(async () => {
+            try {
+                const response = await fetch('/api/ads/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        watchDuration: 10000
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(`✅ ${data.message}\n\nYeni bakiyeniz: ${data.newTokenBalance} jeton`);
+                    updateUser({ tokens: data.newTokenBalance });
+                    // Refresh available ads
+                    const adsResponse = await fetch(`/api/ads/available?userId=${user.id}`);
+                    if (adsResponse.ok) {
+                        const adsData = await adsResponse.json();
+                        setAvailableAds(adsData);
+                    }
+                } else {
+                    alert(`❌ ${data.error || 'Bir hata oluştu'}`);
+                }
+            } catch (error) {
+                console.error('Watch ad error:', error);
+                alert('❌ Bir hata oluştu.');
+            } finally {
+                setIsWatchingAd(false);
+                if (document.body.contains(script)) {
+                    document.body.removeChild(script);
+                }
+            }
+        }, 10000); // 10 seconds
+    };
 
     const handlePurchase = async (productId: string, productName: string, price: number) => {
         if (!user) return;
@@ -402,6 +474,45 @@ export default function SettingsPage() {
                                         ⏰ Bir sonraki jeton: {timeRemaining}
                                     </p>
                                 )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Video Ad Rewards */}
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-6 border border-purple-100">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-bold">Reklam İzle & Kazan</h2>
+                            <div className="bg-purple-100 px-3 py-1 rounded-full">
+                                <span className="text-sm font-bold text-purple-600">
+                                    {availableAds.watched}/3 İzlendi
+                                </span>
+                            </div>
+                        </div>
+
+                        <p className="text-sm text-gray-600 mb-4">
+                            Video reklamları izleyerek günde 3 kez, her seferinde <span className="font-bold text-purple-600">5 jeton</span> kazanabilirsiniz!
+                        </p>
+
+                        {/* Progress Bar */}
+                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
+                            <div
+                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500"
+                                style={{ width: `${(availableAds.watched / 3) * 100}%` }}
+                            ></div>
+                        </div>
+
+                        {availableAds.canWatch ? (
+                            <button
+                                onClick={handleWatchAd}
+                                disabled={isWatchingAd}
+                                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
+                            >
+                                {isWatchingAd ? '🎬 Reklam açılıyor...' : `🎬 Reklam İzle (${availableAds.remaining} Kaldı)`}
+                            </button>
+                        ) : (
+                            <div className="bg-white rounded-2xl p-4 border border-gray-200 text-center">
+                                <p className="text-gray-500 font-medium">⏰ Günlük limit doldu</p>
+                                <p className="text-xs text-gray-400 mt-1">Yarın tekrar gelin!</p>
                             </div>
                         )}
                     </div>
