@@ -183,7 +183,7 @@ export default function SettingsPage() {
                     document.body.removeChild(script);
                 }
             }
-        }, 10000); // 10 seconds
+        }, 5000); // 5 seconds
     };
 
     const handlePurchase = async (productId: string, productName: string, price: number) => {
