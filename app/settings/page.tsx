@@ -140,9 +140,9 @@ export default function SettingsPage() {
 
         setIsWatchingAd(true);
 
-        // Load Admaven Pop ad
+        // Load Admaven In-Page Push ad
         const script = document.createElement('script');
-        script.src = `//dcbbwymp1bhlf.cloudfront.net/?wbbcd=${process.env.NEXT_PUBLIC_ADMAVEN_POP_ZONE_ID || 'PENDING_POP_ZONE_ID'}`;
+        script.src = `//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1230039`;
         script.async = true;
         script.setAttribute('data-cfasync', 'false');
 
@@ -163,8 +163,8 @@ export default function SettingsPage() {
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert(`✅ ${data.message}\n\nYeni bakiyeniz: ${data.newTokenBalance} jeton`);
-                    updateUser({ tokens: data.newTokenBalance });
+                    alert(`✅ ${data.message}\n\nYeni bakiyeniz: ${data.newBalance} jeton`);
+                    updateUser({ tokens: data.newBalance });
                     // Refresh available ads
                     const adsResponse = await fetch(`/api/ads/available?userId=${user.id}`);
                     if (adsResponse.ok) {
