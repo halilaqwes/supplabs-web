@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'User ID gerekli' }, { status: 400 });
         }
 
-        // Anti-cheat: Minimum watch duration (e.g., 15 seconds)
-        const MIN_WATCH_DURATION = 15000; // 15 seconds in ms
+        // Anti-cheat: Minimum watch duration (reduced for testing)
+        const MIN_WATCH_DURATION = 5000; // 5 seconds in ms
         if (!watchDuration || watchDuration < MIN_WATCH_DURATION) {
             return NextResponse.json({
                 error: 'Video tam olarak izlenmedi',

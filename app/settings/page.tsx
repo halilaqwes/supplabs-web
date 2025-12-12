@@ -156,7 +156,7 @@ export default function SettingsPage() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         userId: user.id,
-                        watchDuration: 10000
+                        watchDuration: 5000
                     })
                 });
 
