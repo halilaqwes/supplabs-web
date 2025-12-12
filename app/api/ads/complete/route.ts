@@ -6,7 +6,7 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const TOKENS_PER_VIDEO = 5;
+const TOKENS_PER_VIDEO = 1; // 1 token per ad (1 token = 1 TL)
 const MAX_DAILY_VIDEOS = 3;
 
 export async function POST(request: NextRequest) {
