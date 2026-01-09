@@ -3,7 +3,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { Post } from "./Post";
 import { PostComposer } from "./PostComposer";
-import { NewYearCountdown } from "@/components/campaigns/NewYearCountdown";
+
 import { TrendingSection } from "./TrendingSection";
 import { SuggestionsSection } from "./SuggestionsSection";
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -108,9 +108,7 @@ export function Feed() {
 
             <PostComposer onPostCreated={handlePostCreated} />
 
-            <div className="px-4 mt-4">
-                <NewYearCountdown />
-            </div>
+
 
             {/* Mobile/Tablet Trending and Suggestions - Only visible below lg breakpoint */}
             <div className="lg:hidden px-4 py-4 space-y-4">
